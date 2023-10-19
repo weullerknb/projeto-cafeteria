@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "222452920299",
+    "project_id": "projeto-cafeteria-dad79",
+    "storage_bucket": "projeto-cafeteria-dad79.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:222452920299:android:d779fcbf4d84a06d7cb3ae",
+        "android_client_info": {
+          "package_name": "com.example.projetocafeteria"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCIvZmgh7fQ9WXlqesrVhFNIgD8Xb4hUAA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
