@@ -78,14 +78,14 @@
                 android:hint="Telefone"
                 android:inputType="phone"
                 android:padding="12dp"
-                app:layout_constraintBottom_toTopOf="@+id/edtNascimento"
+                app:layout_constraintBottom_toTopOf="@+id/edtDataNascimento"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/edtCpf" />
 
             <EditText
-                android:id="@+id/edtNascimento"
+                android:id="@+id/edtDataNascimento"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/bg_edit_off"
@@ -118,7 +118,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/edtNascimento" />
+                app:layout_constraintTop_toBottomOf="@+id/edtDataNascimento" />
 
             <EditText
                 android:id="@+id/edtSenha"
@@ -166,14 +166,15 @@
                 android:text="Criar conta"
                 android:textAllCaps="false"
                 android:textColor="@color/white"
-                app:layout_constraintBottom_toTopOf="@+id/progressBar3"
+                android:onClick="validaDados"
+                app:layout_constraintBottom_toTopOf="@+id/progressBar"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/edtConfirmaSenha" />
 
             <ProgressBar
-                android:id="@+id/progressBar3"
+                android:id="@+id/progressBar"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:indeterminateTint="@color/amarelo"
