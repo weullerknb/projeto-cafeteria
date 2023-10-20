@@ -23,8 +23,13 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void configClicks() {
+        binding.include.ibVoltar.setOnClickListener(view -> finish());
+
         binding.btnRecuperaSenha.setOnClickListener(view ->
                 startActivity(new Intent(this, RecuperaContaActivity.class)));
+
+        binding.btnCadastro.setOnClickListener(view ->
+                startActivity(new Intent(this, CadastroActivity.class)));
     }
 
 }

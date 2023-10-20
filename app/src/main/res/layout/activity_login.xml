@@ -22,7 +22,7 @@
             android:layout_height="wrap_content">
 
             <include
-                android:id="@+id/btnVoltar"
+                android:id="@+id/include"
                 layout="@layout/ib_voltar"
                 android:layout_width="32dp"
                 android:layout_height="32dp"
