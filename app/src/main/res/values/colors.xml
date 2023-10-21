@@ -7,4 +7,6 @@
     <color name="amarelo">#ffff00</color>
     <color name="cinza">#FC6E20</color>
     <color name="color_laranja">#FF8C00</color>
+    <color name="colorIconeOffBnv">#FF000000</color>
+    <color name="colorIconeOnBnv">#ffff00</color>
 </resources>

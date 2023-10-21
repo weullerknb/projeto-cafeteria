@@ -1,13 +1,12 @@
-package com.example.projetocafeteria.activity;
+package com.example.projetocafeteria.activity.app;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
-import android.view.View;
 
-import com.example.projetocafeteria.MainActivity;
+import com.example.projetocafeteria.activity.usuario.MainActivityUsuario;
 import com.example.projetocafeteria.R;
 
 public class SplashActivity extends AppCompatActivity {
@@ -19,7 +18,7 @@ public class SplashActivity extends AppCompatActivity {
 
         new Handler(getMainLooper()).postDelayed(() -> {
             finish();
-            startActivity(new Intent(this, MainActivity.class));
+            startActivity(new Intent(this, MainActivityUsuario.class));
         }, 3000);
     }
 
