@@ -1,5 +1,6 @@
 package com.example.projetocafeteria.autenticacao;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
@@ -98,6 +99,12 @@ public class CadastroActivity extends AppCompatActivity {
 
                 usuario.setId(id);
                 usuario.salvar();
+
+                Intent intent = new Intent();
+                intent.putExtra("email", usuario.getEmail());
+                setResult(RESULT_OK, intent);
+                finish();
+
             } else {
                 Toast.makeText(this, FirebaseHelper.validaErros(
                         task.getException().getMessage()), Toast.LENGTH_SHORT).show();
@@ -111,4 +118,5 @@ public class CadastroActivity extends AppCompatActivity {
 
         binding.btnLogin.setOnClickListener(view -> finish());
     }
+
 }
