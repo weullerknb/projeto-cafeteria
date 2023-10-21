@@ -11,6 +11,7 @@ import android.widget.Toast;
 import com.example.projetocafeteria.R;
 import com.example.projetocafeteria.databinding.ActivityCadastroBinding;
 import com.example.projetocafeteria.helper.FirebaseHelper;
+import com.example.projetocafeteria.model.Loja;
 import com.example.projetocafeteria.model.Usuario;
 
 public class CadastroActivity extends AppCompatActivity {
