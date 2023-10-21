@@ -4,8 +4,9 @@
     <color name="white">#FFFFFFFF</color>
     <color name="cor_primaria">#d3a27f</color>
     <color name="cor_secundaria">#4b280a</color>
+    <color name="marrom">#8f4500</color>
     <color name="amarelo">#ffff00</color>
-    <color name="cinza">#FC6E20</color>
+    <color name="cinza">#808080</color>
     <color name="color_laranja">#FF8C00</color>
     <color name="colorIconeOffBnv">#FF000000</color>
     <color name="colorIconeOnBnv">#ffff00</color>
