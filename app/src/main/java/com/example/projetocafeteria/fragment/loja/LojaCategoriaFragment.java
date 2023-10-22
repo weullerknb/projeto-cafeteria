@@ -2,6 +2,7 @@ package com.example.projetocafeteria.fragment.loja;
 
 import static android.app.Activity.RESULT_OK;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.ImageDecoder;
@@ -20,12 +21,17 @@ import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 import android.Manifest;
 
 import com.example.projetocafeteria.R;
 import com.example.projetocafeteria.databinding.FragmentLojaCategoriaBinding;
 import com.example.projetocafeteria.databinding.DialogFormCategoriaBinding;
+import com.example.projetocafeteria.helper.FirebaseHelper;
+import com.example.projetocafeteria.model.Categoria;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 import com.gun0912.tedpermission.PermissionListener;
 import com.gun0912.tedpermission.normal.TedPermission;
 
@@ -37,6 +43,8 @@ public class LojaCategoriaFragment extends Fragment {
     private FragmentLojaCategoriaBinding binding;
     private AlertDialog dialog;
     private String caminhoImagem = null;
+
+    private Categoria categoria;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -69,7 +77,29 @@ public class LojaCategoriaFragment extends Fragment {
         });
 
         categoriaBinding.btnSalvar.setOnClickListener(v -> {
-            dialog.dismiss();
+
+            String nomeCategoria = categoriaBinding.edtCategoria.getText().toString().trim();
+
+            if (!nomeCategoria.isEmpty()) {
+                if (caminhoImagem != null) {
+
+                    ocultaTeclado();
+
+                    categoriaBinding.progressBar.setVisibility(View.VISIBLE);
+
+                    if (categoria == null) categoria = new Categoria();
+                    categoria.setNome(nomeCategoria);
+                    categoria.setTodos(categoriaBinding.cbTodos.isChecked());
+
+                    salvarImagemFirebase();
+
+                } else {
+                    ocultaTeclado();
+                    Toast.makeText(getContext(), "Escolha uma imagem para a categoria.", Toast.LENGTH_SHORT).show();
+                }
+            } else {
+                categoriaBinding.edtCategoria.setError("Informação obrigatória.");
+            }
         });
 
         categoriaBinding.imagemCategoria.setOnClickListener(v -> verificaPermissaoGaleria());
@@ -78,6 +108,29 @@ public class LojaCategoriaFragment extends Fragment {
 
         dialog = builder.create();
         dialog.show();
+    }
+
+    private void salvarImagemFirebase() {
+        StorageReference storageReference = FirebaseHelper.getStorageReference()
+                .child("imagens")
+                .child("categorias")
+                .child(categoria.getId() + ".jped");
+
+        UploadTask uploadTask = storageReference.putFile(Uri.parse(caminhoImagem));
+        uploadTask.addOnSuccessListener(taskSnapshot -> storageReference.getDownloadUrl().addOnCompleteListener(task -> {
+
+            String urlImagem = task.getResult().toString();
+
+            categoria.setUrlImagem(urlImagem);
+            categoria.salvar();
+
+            categoria = null;
+            dialog.dismiss();
+
+        })).addOnFailureListener(e -> {
+            dialog.dismiss();
+            Toast.makeText(getContext(), "Erro ao fazer upload da imagem.", Toast.LENGTH_SHORT).show();
+        });
     }
 
     private void verificaPermissaoGaleria() {
@@ -131,4 +184,11 @@ public class LojaCategoriaFragment extends Fragment {
                 }
             }
     );
+
+    private void ocultaTeclado() {
+        InputMethodManager inputMethodManager =
+                (InputMethodManager) getActivity().getSystemService(Activity.INPUT_METHOD_SERVICE);
+        inputMethodManager.hideSoftInputFromWindow(categoriaBinding.edtCategoria.getWindowToken(),
+                InputMethodManager.HIDE_NOT_ALWAYS);
+    }
 }
