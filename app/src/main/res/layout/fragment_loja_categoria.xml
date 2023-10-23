@@ -42,8 +42,8 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.5"
-        app:rightBgColor="@color/color_delete"
-        app:rightImage="@drawable/ic_delete" />
+        app:leftBgColor="@color/color_delete"
+        app:leftImage="@drawable/ic_delete" />
 
     <ImageButton
         android:id="@+id/btnAddCategoria"

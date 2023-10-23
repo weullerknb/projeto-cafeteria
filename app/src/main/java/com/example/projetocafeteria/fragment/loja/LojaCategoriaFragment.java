@@ -28,6 +28,7 @@ import android.Manifest;
 
 import com.example.projetocafeteria.R;
 import com.example.projetocafeteria.adapter.CategoriaAdapter;
+import com.example.projetocafeteria.databinding.DialogDeleteBinding;
 import com.example.projetocafeteria.databinding.FragmentLojaCategoriaBinding;
 import com.example.projetocafeteria.databinding.DialogFormCategoriaBinding;
 import com.example.projetocafeteria.helper.FirebaseHelper;
@@ -40,6 +41,7 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.gun0912.tedpermission.PermissionListener;
 import com.gun0912.tedpermission.normal.TedPermission;
+import com.tsuryo.swipeablerv.SwipeLeftRightCallback;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -81,6 +83,18 @@ public class LojaCategoriaFragment extends Fragment implements CategoriaAdapter.
         binding.rvCategorias.setHasFixedSize(true);
         categoriaAdapter = new CategoriaAdapter(categoriaList, this);
         binding.rvCategorias.setAdapter(categoriaAdapter);
+
+        binding.rvCategorias.setListener(new SwipeLeftRightCallback.Listener() {
+            @Override
+            public void onSwipedLeft(int position) {
+
+            }
+
+            @Override
+            public void onSwipedRight(int position) {
+                showDialogDelete(categoriaList.get(position));
+            }
+        });
     }
 
     private void recuperaCategorias() {
@@ -116,6 +130,40 @@ public class LojaCategoriaFragment extends Fragment implements CategoriaAdapter.
 
     private void configClicks() {
         binding.btnAddCategoria.setOnClickListener(v -> showDialog());
+    }
+
+    private void showDialogDelete(Categoria categoria) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(
+                getContext(), R.style.CustomAlertDialog2);
+
+        DialogDeleteBinding deleteBinding = DialogDeleteBinding
+                .inflate(LayoutInflater.from(getContext()));
+
+        deleteBinding.btnFechar.setOnClickListener(v -> {
+            dialog.dismiss();
+            categoriaAdapter.notifyDataSetChanged();
+        });
+
+        deleteBinding.btnSim.setOnClickListener(v -> {
+            categoriaList.remove(categoria);
+
+            if (categoriaList.isEmpty()) {
+                binding.textInfo.setText("Nenhuma categoria cadastrada.");
+            } else {
+                binding.textInfo.setText("");
+            }
+
+            categoria.delete();
+
+            categoriaAdapter.notifyDataSetChanged();
+
+            dialog.dismiss();
+        });
+
+        builder.setView(deleteBinding.getRoot());
+
+        dialog = builder.create();
+        dialog.show();
     }
 
     private void showDialog() {

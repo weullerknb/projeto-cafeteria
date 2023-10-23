@@ -2,6 +2,7 @@ package com.example.projetocafeteria.model;
 
 import com.example.projetocafeteria.helper.FirebaseHelper;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.storage.StorageReference;
 
 public class Categoria {
 
@@ -52,6 +53,18 @@ public class Categoria {
                 .child("categorias")
                 .child(this.getId());
         categoriaRef.setValue(this);
+    }
 
+    public void delete() {
+        DatabaseReference categoriaRef = FirebaseHelper.getDatabaseReference()
+                .child("categorias")
+                .child(this.getId());
+        categoriaRef.removeValue();
+
+        StorageReference storageReference = FirebaseHelper.getStorageReference()
+                .child("imagens")
+                .child("categorias")
+                .child(this.getId() + ".jped");
+        storageReference.delete();
     }
 }
