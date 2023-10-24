@@ -3,6 +3,7 @@ package com.example.projetocafeteria.activity.loja;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.FileProvider;
 
 import android.Manifest;
 import android.content.Intent;
@@ -11,6 +12,7 @@ import android.graphics.ImageDecoder;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,6 +25,10 @@ import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.gun0912.tedpermission.PermissionListener;
 import com.gun0912.tedpermission.normal.TedPermission;
 
+import java.io.File;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 public class LojaFormProdutoActivity extends AppCompatActivity {
@@ -30,6 +36,8 @@ public class LojaFormProdutoActivity extends AppCompatActivity {
     private ActivityLojaFormProdutoBinding binding;
 
     private int resultCode = 0;
+
+    private String currentPhotoPath;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -124,8 +132,54 @@ public class LojaFormProdutoActivity extends AppCompatActivity {
         // Manifest.permission.READ_CONTACTS, Manifest.permission.ACCESS_FINE_LOCATION
     }
 
+
+    private File createImageFile() throws IOException {
+        // Create an image file name
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String imageFileName = "JPEG_" + timeStamp + "_";
+        File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        File image = File.createTempFile(
+                imageFileName,  /* prefix */
+                ".jpg",         /* suffix */
+                storageDir      /* directory */
+        );
+
+        // Save a file: path for use with ACTION_VIEW intents
+        currentPhotoPath = image.getAbsolutePath();
+        return image;
+    }
+
     private void abrirCamera() {
 
+        switch (resultCode) {
+            case 0:
+                resultCode = 3;
+                break;
+            case 1:
+                resultCode = 4;
+                break;
+            case 2:
+                resultCode = 5;
+                break;
+        }
+
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        // Ensure that there's a camera activity to handle the intent
+        // Create the File where the photo should go
+        File photoFile = null;
+        try {
+            photoFile = createImageFile();
+        } catch (IOException ex) {
+            // Error occurred while creating the File
+        }
+        // Continue only if the File was successfully created
+        if (photoFile != null) {
+            Uri photoURI = FileProvider.getUriForFile(this,
+                    "com.example.projetocafeteria.fileprovider",
+                    photoFile);
+            takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+            resultLauncher.launch(takePictureIntent);
+        }
     }
 
     private void abrirGaleria() {
@@ -138,28 +192,53 @@ public class LojaFormProdutoActivity extends AppCompatActivity {
             result -> {
                 if (result.getResultCode() == RESULT_OK) {
 
-                    Uri imagemSelecionada = result.getData().getData();
                     String caminhoImagem;
 
-                    try {
-                        caminhoImagem = imagemSelecionada.toString();
+                    if (resultCode <= 2) { // Galeria
+
+                        Uri imagemSelecionada = result.getData().getData();
+
+                        try {
+                            caminhoImagem = imagemSelecionada.toString();
+
+                            switch (resultCode) {
+                                case 0:
+                                    binding.imageFake0.setVisibility(View.GONE);
+                                    binding.imagemProduto0.setImageBitmap(getBitmap(imagemSelecionada));
+                                    break;
+                                case 1:
+                                    binding.imageFake1.setVisibility(View.GONE);
+                                    binding.imagemProduto1.setImageBitmap(getBitmap(imagemSelecionada));
+                                    break;
+                                case 2:
+                                    binding.imageFake2.setVisibility(View.GONE);
+                                    binding.imagemProduto2.setImageBitmap(getBitmap(imagemSelecionada));
+                                    break;
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+
+                    } else { // Câmera
+
+                        File file = new File(currentPhotoPath);
+                        caminhoImagem = String.valueOf(file.toURI());
 
                         switch (resultCode) {
-                            case 0:
+                            case 3:
                                 binding.imageFake0.setVisibility(View.GONE);
-                                binding.imagemProduto0.setImageBitmap(getBitmap(imagemSelecionada));
+                                binding.imagemProduto0.setImageURI(Uri.fromFile(file));
                                 break;
-                            case 1:
+                            case 4:
                                 binding.imageFake1.setVisibility(View.GONE);
-                                binding.imagemProduto1.setImageBitmap(getBitmap(imagemSelecionada));
+                                binding.imagemProduto1.setImageURI(Uri.fromFile(file));
                                 break;
-                            case 2:
+                            case 5:
                                 binding.imageFake2.setVisibility(View.GONE);
-                                binding.imagemProduto2.setImageBitmap(getBitmap(imagemSelecionada));
+                                binding.imagemProduto2.setImageURI(Uri.fromFile(file));
                                 break;
                         }
-                    } catch (Exception e) {
-                        e.printStackTrace();
+
                     }
                 }
             }
