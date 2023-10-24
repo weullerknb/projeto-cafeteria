@@ -1,10 +1,19 @@
 package com.example.projetocafeteria.activity.loja;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.Manifest;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.ImageDecoder;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.widget.Toast;
 
 import com.example.projetocafeteria.R;
@@ -20,6 +29,8 @@ public class LojaFormProdutoActivity extends AppCompatActivity {
 
     private ActivityLojaFormProdutoBinding binding;
 
+    private int resultCode = 0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -30,12 +41,15 @@ public class LojaFormProdutoActivity extends AppCompatActivity {
     }
 
     private void configClicks() {
-        binding.imagemProduto0.setOnClickListener(v -> showBottomSheet());
-        binding.imagemProduto1.setOnClickListener(v -> showBottomSheet());
-        binding.imagemProduto2.setOnClickListener(v -> showBottomSheet());
+        binding.imagemProduto0.setOnClickListener(v -> showBottomSheet(0));
+        binding.imagemProduto1.setOnClickListener(v -> showBottomSheet(1));
+        binding.imagemProduto2.setOnClickListener(v -> showBottomSheet(2));
     }
 
-    private void showBottomSheet() {
+    private void showBottomSheet(int code) {
+
+        resultCode = code;
+
         BottomSheetFromProdutoBinding sheetBinding =
                 BottomSheetFromProdutoBinding.inflate(LayoutInflater.from(this));
         BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(
@@ -115,6 +129,55 @@ public class LojaFormProdutoActivity extends AppCompatActivity {
     }
 
     private void abrirGaleria() {
+        Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        resultLauncher.launch(intent);
+    }
 
+    private final ActivityResultLauncher<Intent> resultLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            result -> {
+                if (result.getResultCode() == RESULT_OK) {
+
+                    Uri imagemSelecionada = result.getData().getData();
+                    String caminhoImagem;
+
+                    try {
+                        caminhoImagem = imagemSelecionada.toString();
+
+                        switch (resultCode) {
+                            case 0:
+                                binding.imageFake0.setVisibility(View.GONE);
+                                binding.imagemProduto0.setImageBitmap(getBitmap(imagemSelecionada));
+                                break;
+                            case 1:
+                                binding.imageFake1.setVisibility(View.GONE);
+                                binding.imagemProduto1.setImageBitmap(getBitmap(imagemSelecionada));
+                                break;
+                            case 2:
+                                binding.imageFake2.setVisibility(View.GONE);
+                                binding.imagemProduto2.setImageBitmap(getBitmap(imagemSelecionada));
+                                break;
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+    );
+
+    private Bitmap getBitmap(Uri caminhoUri) {
+        Bitmap bitmap = null;
+
+        try {
+            if (Build.VERSION.SDK_INT < 28) {
+                bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), caminhoUri);
+            } else {
+                ImageDecoder.Source source = ImageDecoder.createSource(getContentResolver(), caminhoUri);
+                bitmap = ImageDecoder.decodeBitmap(source);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return bitmap;
     }
 }
