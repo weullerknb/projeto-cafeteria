@@ -21,8 +21,12 @@ import android.widget.Toast;
 import com.example.projetocafeteria.R;
 import com.example.projetocafeteria.databinding.ActivityLojaFormProdutoBinding;
 import com.example.projetocafeteria.databinding.BottomSheetFromProdutoBinding;
+import com.example.projetocafeteria.helper.FirebaseHelper;
 import com.example.projetocafeteria.model.ImagemUpload;
+import com.example.projetocafeteria.model.Produto;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 import com.gun0912.tedpermission.PermissionListener;
 import com.gun0912.tedpermission.normal.TedPermission;
 
@@ -36,6 +40,9 @@ import java.util.List;
 public class LojaFormProdutoActivity extends AppCompatActivity {
 
     private List<ImagemUpload> imagemUploadList = new ArrayList<>();
+
+    private Produto produto;
+    private boolean novoProduto = true;
 
     private ActivityLojaFormProdutoBinding binding;
 
@@ -229,6 +236,31 @@ public class LojaFormProdutoActivity extends AppCompatActivity {
         }
     }
 
+    private void salvarImagemFirebase(int index, String caminhoImagem) {
+        StorageReference storageReference = FirebaseHelper.getStorageReference()
+                .child("imagens")
+                .child("anuncios")
+                .child(produto.getId())
+                .child("imagem" + index + ".jpeg");
+
+        UploadTask uploadTask = storageReference.putFile(Uri.parse(caminhoImagem));
+        uploadTask.addOnSuccessListener(taskSnapshot -> storageReference.getDownloadUrl().addOnCompleteListener(task -> {
+
+            if (novoProduto) {
+                produto.getUrlsImagens().add(index, task.getResult().toString());
+            } else {
+                produto.getUrlsImagens().set(index, task.getResult().toString());
+            }
+
+            if (imagemUploadList.size() == index + 1) {
+                produto.salvar(novoProduto);
+            }
+
+        })).addOnFailureListener(e -> Toast.makeText(
+                this, "Ocorreu um erro com o upload, tente novamente.",
+                Toast.LENGTH_SHORT).show());
+    }
+
     private final ActivityResultLauncher<Intent> resultLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
             result -> {
@@ -257,6 +289,9 @@ public class LojaFormProdutoActivity extends AppCompatActivity {
                                     binding.imagemProduto2.setImageBitmap(getBitmap(imagemSelecionada));
                                     break;
                             }
+
+                            configUpload(caminhoImagem);
+
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
@@ -280,6 +315,8 @@ public class LojaFormProdutoActivity extends AppCompatActivity {
                                 binding.imagemProduto2.setImageURI(Uri.fromFile(file));
                                 break;
                         }
+
+                        configUpload(caminhoImagem);
 
                     }
                 }
