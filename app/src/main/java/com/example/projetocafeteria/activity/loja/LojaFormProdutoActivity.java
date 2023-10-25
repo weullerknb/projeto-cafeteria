@@ -3,8 +3,11 @@ package com.example.projetocafeteria.activity.loja;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.FileProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.Manifest;
 import android.app.Activity;
@@ -16,15 +19,17 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
 import com.example.projetocafeteria.R;
+import com.example.projetocafeteria.adapter.CategoriaDialogAdapter;
 import com.example.projetocafeteria.databinding.ActivityLojaFormProdutoBinding;
 import com.example.projetocafeteria.databinding.BottomSheetFromProdutoBinding;
+import com.example.projetocafeteria.databinding.DialogDeleteBinding;
+import com.example.projetocafeteria.databinding.DialogFormProdutoCategoriaBinding;
 import com.example.projetocafeteria.helper.FirebaseHelper;
 import com.example.projetocafeteria.model.Categoria;
 import com.example.projetocafeteria.model.ImagemUpload;
@@ -43,12 +48,16 @@ import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-public class LojaFormProdutoActivity extends AppCompatActivity {
+public class LojaFormProdutoActivity extends AppCompatActivity implements CategoriaDialogAdapter.OnClick {
 
+    private DialogFormProdutoCategoriaBinding categoriaBinding;
+
+    private List<String> idsCategoriasSelecionadas = new ArrayList<>();
     private List<Categoria> categoriaList = new ArrayList<>();
 
     private List<ImagemUpload> imagemUploadList = new ArrayList<>();
@@ -61,6 +70,8 @@ public class LojaFormProdutoActivity extends AppCompatActivity {
     private int resultCode = 0;
 
     private String currentPhotoPath;
+
+    private AlertDialog dialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,6 +92,42 @@ public class LojaFormProdutoActivity extends AppCompatActivity {
         binding.imagemProduto2.setOnClickListener(v -> showBottomSheet(2));
     }
 
+    private void configRv() {
+        categoriaBinding.rvCategorias.setLayoutManager(new LinearLayoutManager(this));
+        categoriaBinding.rvCategorias.setHasFixedSize(true);
+        CategoriaDialogAdapter categoriaDialogAdapter = new CategoriaDialogAdapter(idsCategoriasSelecionadas, categoriaList, this);
+        categoriaBinding.rvCategorias.setAdapter(categoriaDialogAdapter);
+    }
+
+    public void showDialogCategorias(View view) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.CustomAlertDialog2);
+
+        categoriaBinding = DialogFormProdutoCategoriaBinding
+                .inflate(LayoutInflater.from(this));
+
+        categoriaBinding.btnFechar.setOnClickListener(v -> {
+            dialog.dismiss();
+        });
+
+        categoriaBinding.btnSalvar.setOnClickListener(v -> {
+            dialog.dismiss();
+        });
+
+        if (categoriaList.isEmpty()) {
+            categoriaBinding.textInfo.setText("Nenhuma categoria cadastrada.");
+        } else {
+            categoriaBinding.textInfo.setText("");
+        }
+        categoriaBinding.progressBar.setVisibility(View.GONE);
+
+        configRv();
+
+        builder.setView(categoriaBinding.getRoot());
+
+        dialog = builder.create();
+        dialog.show();
+    }
+
     private void recuperaCategorias() {
         DatabaseReference categoriasRef = FirebaseHelper.getDatabaseReference()
                 .child("categorias");
@@ -96,6 +143,7 @@ public class LojaFormProdutoActivity extends AppCompatActivity {
                 } else {
 
                 }
+                Collections.reverse(categoriaList);
             }
 
             @Override
@@ -438,4 +486,8 @@ public class LojaFormProdutoActivity extends AppCompatActivity {
                 InputMethodManager.HIDE_NOT_ALWAYS);
     }
 
+    @Override
+    public void onClickListener(Categoria categoria) {
+
+    }
 }
