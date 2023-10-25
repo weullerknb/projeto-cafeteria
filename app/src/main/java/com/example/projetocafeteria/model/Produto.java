@@ -13,11 +13,11 @@ public class Produto {
     private int idLocal; //id Local
     private String titulo;
     private String descricao;
-    private double precoAntigo;
-    private double precoAtual;
+    private double valorAntigo;
+    private double valorAtual;
     private boolean rascunho = false;
     private List<String> idsCategorias = new ArrayList<>();
-    private List<String> urlsImagens = new ArrayList<>();
+    private List<ImagemUpload> urlsImagens = new ArrayList<>();
 
     public Produto() {
         DatabaseReference produtoRef = FirebaseHelper.getDatabaseReference();
@@ -57,20 +57,20 @@ public class Produto {
         this.descricao = descricao;
     }
 
-    public double getPrecoAntigo() {
-        return precoAntigo;
+    public double getValorAntigo() {
+        return valorAntigo;
     }
 
-    public void setPrecoAntigo(double precoAntigo) {
-        this.precoAntigo = precoAntigo;
+    public void setValorAntigo(double valorAntigo) {
+        this.valorAntigo = valorAntigo;
     }
 
-    public double getPrecoAtual() {
-        return precoAtual;
+    public double getValorAtual() {
+        return valorAtual;
     }
 
-    public void setPrecoAtual(double precoAtual) {
-        this.precoAtual = precoAtual;
+    public void setValorAtual(double valorAtual) {
+        this.valorAtual = valorAtual;
     }
 
     public boolean isRascunho() {
@@ -89,15 +89,18 @@ public class Produto {
         this.idsCategorias = idsCategorias;
     }
 
-    public List<String> getUrlsImagens() {
+    public List<ImagemUpload> getUrlsImagens() {
         return urlsImagens;
     }
 
-    public void setUrlsImagens(List<String> urlsImagens) {
+    public void setUrlsImagens(List<ImagemUpload> urlsImagens) {
         this.urlsImagens = urlsImagens;
     }
 
     public void salvar(boolean novoProduto) {
-
+        DatabaseReference produtoRef = FirebaseHelper.getDatabaseReference()
+                .child("produtos")
+                .child(this.getId());
+        produtoRef.setValue(this);
     }
 }

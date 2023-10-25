@@ -133,6 +133,7 @@
                     android:theme="@style/EditTextTheme">
 
                     <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/edtTitulo"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:hint="Título" />
@@ -146,6 +147,7 @@
                     android:layout_marginTop="16dp">
 
                     <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/edtDescricao"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:hint="Descrição" />
@@ -166,6 +168,7 @@
                         android:layout_weight="1">
 
                         <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/edtValorAntigo"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:hint="De R$" />
@@ -181,6 +184,7 @@
 
 
                         <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/edtValorAtual"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:hint="Por R$" />
@@ -197,12 +201,13 @@
                     android:text="Nenhuma categoria selecionada"/>
 
                 <android.widget.Button
-                    android:id="@+id/btnLogin"
+                    android:id="@+id/btnSalvar"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@color/cor_secundaria"
                     android:layout_marginTop="16dp"
                     android:text="Salvar"
+                    android:onClick="validaDados"
                     android:layout_marginBottom="24dp"
                     android:textAllCaps="false"
                     android:textColor="@color/white"

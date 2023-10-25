@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.FileProvider;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.ImageDecoder;
@@ -16,6 +17,7 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
 import com.example.projetocafeteria.R;
@@ -63,6 +65,49 @@ public class LojaFormProdutoActivity extends AppCompatActivity {
         binding.imagemProduto0.setOnClickListener(v -> showBottomSheet(0));
         binding.imagemProduto1.setOnClickListener(v -> showBottomSheet(1));
         binding.imagemProduto2.setOnClickListener(v -> showBottomSheet(2));
+    }
+
+    public void validaDados(View view) {
+        String titulo = binding.edtTitulo.getText().toString().trim();
+        String descricao = binding.edtDescricao.getText().toString().trim();
+        String valorAntigo = binding.edtValorAntigo.getText().toString().trim();
+        String valorAtual = binding.edtValorAtual.getText().toString().trim();
+
+        if (!titulo.isEmpty()) {
+            if (!descricao.isEmpty()) {
+
+                if (produto == null) produto = new Produto();
+
+                produto.setTitulo(titulo);
+                produto.setDescricao(descricao);
+                produto.setValorAntigo(10);
+                produto.setValorAtual(8);
+
+                if (novoProduto) { // Novo produto
+                    if (imagemUploadList.size() == 3) {
+                        for (int i = 0; i < imagemUploadList.size(); i++) {
+                            salvarImagemFirebase(imagemUploadList.get(i));
+                        }
+                    } else {
+                        ocultaTeclado();
+                        Toast.makeText(this, "Escolha 3 imagens para o produto.", Toast.LENGTH_SHORT).show();
+                    }
+                } else { // Edição do produto
+                    if (imagemUploadList.size() > 0) {
+                        for (int i = 0; i < imagemUploadList.size(); i++) {
+                            salvarImagemFirebase(imagemUploadList.get(i));
+                        }
+                    } else {
+                        produto.salvar(false);
+                    }
+                }
+
+            } else {
+                binding.edtDescricao.setError("Informação obrigatória.");
+            }
+        } else {
+            binding.edtTitulo.setError("Informação obrigatória.");
+        }
     }
 
     private void showBottomSheet(int code) {
@@ -236,21 +281,22 @@ public class LojaFormProdutoActivity extends AppCompatActivity {
         }
     }
 
-    private void salvarImagemFirebase(int index, String caminhoImagem) {
+    private void salvarImagemFirebase(ImagemUpload imagemUpload) {
+
+        int index = imagemUpload.getIndex();
+        String caminhoImagem = imagemUpload.getCaminhoImagem();
+
         StorageReference storageReference = FirebaseHelper.getStorageReference()
                 .child("imagens")
-                .child("anuncios")
+                .child("produtos")
                 .child(produto.getId())
                 .child("imagem" + index + ".jpeg");
 
         UploadTask uploadTask = storageReference.putFile(Uri.parse(caminhoImagem));
         uploadTask.addOnSuccessListener(taskSnapshot -> storageReference.getDownloadUrl().addOnCompleteListener(task -> {
 
-            if (novoProduto) {
-                produto.getUrlsImagens().add(index, task.getResult().toString());
-            } else {
-                produto.getUrlsImagens().set(index, task.getResult().toString());
-            }
+            imagemUpload.setCaminhoImagem(task.getResult().toString());
+            produto.getUrlsImagens().add(imagemUpload);
 
             if (imagemUploadList.size() == index + 1) {
                 produto.salvar(novoProduto);
@@ -338,4 +384,11 @@ public class LojaFormProdutoActivity extends AppCompatActivity {
         }
         return bitmap;
     }
+
+    private void ocultaTeclado() {
+        InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
+        inputMethodManager.hideSoftInputFromWindow(binding.edtTitulo.getWindowToken(),
+                InputMethodManager.HIDE_NOT_ALWAYS);
+    }
+
 }
