@@ -81,6 +81,8 @@ public class LojaFormProdutoActivity extends AppCompatActivity implements Catego
         binding = ActivityLojaFormProdutoBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
+        getExtra();
+
         configClicks();
 
         iniciaComponentes();
@@ -88,7 +90,12 @@ public class LojaFormProdutoActivity extends AppCompatActivity implements Catego
         recuperaCategorias();
     }
 
+    private void getExtra() {
+
+    }
+
     private void configClicks() {
+        binding.include.include.ibVoltar.setOnClickListener(v -> finish());
         binding.imagemProduto0.setOnClickListener(v -> showBottomSheet(0));
         binding.imagemProduto1.setOnClickListener(v -> showBottomSheet(1));
         binding.imagemProduto2.setOnClickListener(v -> showBottomSheet(2));
@@ -498,6 +505,12 @@ public class LojaFormProdutoActivity extends AppCompatActivity implements Catego
     private void iniciaComponentes() {
         binding.edtValorAntigo.setLocale(new Locale("PT", "br"));
         binding.edtValorAtual.setLocale(new Locale("PT", "br"));
+
+        if (novoProduto) {
+            binding.include.textTitulo.setText("Novo Produto");
+        } else {
+            binding.include.textTitulo.setText("Editar Produto");
+        }
     }
 
     private void ocultaTeclado() {
