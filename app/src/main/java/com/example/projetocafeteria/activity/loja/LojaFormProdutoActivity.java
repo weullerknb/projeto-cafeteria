@@ -58,6 +58,8 @@ public class LojaFormProdutoActivity extends AppCompatActivity implements Catego
     private DialogFormProdutoCategoriaBinding categoriaBinding;
 
     private List<String> idsCategoriasSelecionadas = new ArrayList<>();
+    private List<String> categoriaSelecionadaList = new ArrayList<>();
+
     private List<Categoria> categoriaList = new ArrayList<>();
 
     private List<ImagemUpload> imagemUploadList = new ArrayList<>();
@@ -140,8 +142,6 @@ public class LojaFormProdutoActivity extends AppCompatActivity implements Catego
                         Categoria categoria = ds.getValue(Categoria.class);
                         categoriaList.add(categoria);
                     }
-                } else {
-
                 }
                 Collections.reverse(categoriaList);
             }
@@ -162,33 +162,37 @@ public class LojaFormProdutoActivity extends AppCompatActivity implements Catego
         if (!titulo.isEmpty()) {
             if (!descricao.isEmpty()) {
                 if (valorAtual > 0) {
+                    if (!idsCategoriasSelecionadas.isEmpty()) {
+                        if (produto == null) produto = new Produto();
 
-                    if (produto == null) produto = new Produto();
+                        produto.setTitulo(titulo);
+                        produto.setDescricao(descricao);
+                        produto.setValorAtual(valorAtual);
+                        if (valorAntigo > 0) produto.setValorAntigo(valorAntigo);
+                        produto.setIdsCategorias(idsCategoriasSelecionadas);
 
-                    produto.setTitulo(titulo);
-                    produto.setDescricao(descricao);
-                    produto.setValorAtual(valorAtual);
-                    if (valorAntigo > 0) produto.setValorAntigo(valorAntigo);
-
-                    if (novoProduto) { // Novo produto
-                        if (imagemUploadList.size() == 3) {
-                            for (int i = 0; i < imagemUploadList.size(); i++) {
-                                salvarImagemFirebase(imagemUploadList.get(i));
+                        if (novoProduto) { // Novo produto
+                            if (imagemUploadList.size() == 3) {
+                                for (int i = 0; i < imagemUploadList.size(); i++) {
+                                    salvarImagemFirebase(imagemUploadList.get(i));
+                                }
+                            } else {
+                                ocultaTeclado();
+                                Toast.makeText(this, "Escolha 3 imagens para o produto.", Toast.LENGTH_SHORT).show();
                             }
-                        } else {
-                            ocultaTeclado();
-                            Toast.makeText(this, "Escolha 3 imagens para o produto.", Toast.LENGTH_SHORT).show();
-                        }
-                    } else { // Edição do produto
-                        if (imagemUploadList.size() > 0) {
-                            for (int i = 0; i < imagemUploadList.size(); i++) {
-                                salvarImagemFirebase(imagemUploadList.get(i));
+                        } else { // Edição do produto
+                            if (imagemUploadList.size() > 0) {
+                                for (int i = 0; i < imagemUploadList.size(); i++) {
+                                    salvarImagemFirebase(imagemUploadList.get(i));
+                                }
+                            } else {
+                                produto.salvar(false);
                             }
-                        } else {
-                            produto.salvar(false);
                         }
+                    } else {
+                        ocultaTeclado();
+                        Toast.makeText(this, "Selecione pelo menos uma categoria.", Toast.LENGTH_SHORT).show();
                     }
-
                 } else {
                     binding.edtValorAtual.setError("Informe um valor válido.");
                 }
@@ -277,7 +281,6 @@ public class LojaFormProdutoActivity extends AppCompatActivity implements Catego
                 .check();
         // Manifest.permission.READ_CONTACTS, Manifest.permission.ACCESS_FINE_LOCATION
     }
-
 
     private File createImageFile() throws IOException {
         // Create an image file name
@@ -488,6 +491,12 @@ public class LojaFormProdutoActivity extends AppCompatActivity implements Catego
 
     @Override
     public void onClickListener(Categoria categoria) {
-
+        if (!idsCategoriasSelecionadas.contains(categoria.getId())) { // Marcando categoria
+            idsCategoriasSelecionadas.add(categoria.getId());
+            categoriaSelecionadaList.add(categoria.getNome());
+        } else { // Desmarcando categoria
+            idsCategoriasSelecionadas.remove(categoria.getId());
+            categoriaSelecionadaList.remove(categoria.getNome());
+        }
     }
 }
