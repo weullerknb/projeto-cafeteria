@@ -127,32 +127,35 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/horizontalScrollView">
 
-                <com.google.android.material.textfield.TextInputLayout
+                <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:theme="@style/EditTextTheme">
+                    android:layout_marginTop="16dp"
+                    android:text="Título"/>
 
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/edtTitulo"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:hint="Título" />
-
-                </com.google.android.material.textfield.TextInputLayout>
-
-                <com.google.android.material.textfield.TextInputLayout
+                <EditText
+                    android:id="@+id/edtTitulo"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:theme="@style/EditTextTheme"
-                    android:layout_marginTop="16dp">
+                    android:layout_marginTop="8dp"
+                    android:background="@drawable/bg_edit_off"
+                    android:padding="16dp"
+                    android:hint="Café Gourmet" />
 
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/edtDescricao"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:hint="Descrição" />
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:text="Descrição"/>
 
-                </com.google.android.material.textfield.TextInputLayout>
+                <EditText
+                    android:id="@+id/edtDescricao"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:background="@drawable/bg_edit_off"
+                    android:padding="16dp"
+                    android:hint="Café gourmet, as características importantes são: corpo, aroma, acidez, doçura e amargor." />
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -160,19 +163,49 @@
                     android:layout_marginTop="16dp"
                     android:orientation="horizontal">
 
-                    <com.blackcat.currencyedittext.CurrencyEditText
-                        android:id="@+id/edtValorAntigo"
+                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_marginEnd="8dp"
                         android:layout_weight="1"
-                        android:backgroundTint="@android:color/transparent"/>
+                        android:orientation="vertical">
 
-                    <com.blackcat.currencyedittext.CurrencyEditText
-                        android:id="@+id/edtValorAtual"
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Valor antigo"/>
+
+                        <com.blackcat.currencyedittext.CurrencyEditText
+                            android:id="@+id/edtValorAntigo"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"
+                            android:background="@drawable/bg_edit_off"
+                            android:padding="16dp" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
                         android:layout_weight="1"
-                        android:backgroundTint="@android:color/transparent"/>
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Valor atual"/>
+
+                        <com.blackcat.currencyedittext.CurrencyEditText
+                            android:id="@+id/edtValorAtual"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"
+                            android:padding="16dp"
+                            android:background="@drawable/bg_edit_off" />
+
+                    </LinearLayout>
 
                 </LinearLayout>
 
