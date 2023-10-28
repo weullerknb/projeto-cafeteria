@@ -115,8 +115,10 @@ public class LojaFormProdutoActivity extends AppCompatActivity implements Catego
 
         binding.edtTitulo.setText(produto.getTitulo());
         binding.edtDescricao.setText(produto.getDescricao());
-        binding.edtValorAntigo.setText(String.valueOf(produto.getValorAntigo() * 10));
-        binding.edtValorAtual.setText(String.valueOf(produto.getValorAtual() * 10));
+        double valorAntigo = produto.getValorAntigo() * 10;
+        double valorAtual = produto.getValorAtual() * 10;
+        binding.edtValorAntigo.setText(String.format("%.1f", valorAntigo));
+        binding.edtValorAtual.setText(String.format("%.1f", valorAtual));
     }
 
     private void configClicks() {
