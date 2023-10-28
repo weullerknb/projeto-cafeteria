@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CompoundButton;
 import android.widget.Toast;
 
 import com.example.projetocafeteria.R;
@@ -114,12 +115,19 @@ public class LojaProdutoFragment extends Fragment implements LojaProdutoAdapter.
         DialogLojaProdutoBinding dialogBinding = DialogLojaProdutoBinding
                 .inflate(LayoutInflater.from(requireContext()));
 
+        dialogBinding.cbRascunho.setChecked(produto.isRascunho());
+
         for (int i = 0; i < produto.getUrlsImagens().size(); i++) {
             if (produto.getUrlsImagens().get(i).getIndex() == 0) {
                 Picasso.get().load(produto.getUrlsImagens().get(i).getCaminhoImagem())
                         .into(dialogBinding.imagemProduto);
             }
         }
+
+        dialogBinding.cbRascunho.setOnCheckedChangeListener((check, b) -> {
+            produto.setRascunho(check.isChecked());
+            produto.salvar(false);
+        });
 
         dialogBinding.txtNomeproduto.setText(produto.getTitulo());
 
