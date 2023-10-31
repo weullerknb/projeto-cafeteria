@@ -60,6 +60,9 @@ public class LojaConfigActivity extends AppCompatActivity {
     }
 
     private void configClicks() {
+        binding.include.textTitulo.setText("Configurações");
+        binding.include.include.ibVoltar.setOnClickListener(v -> finish());
+
         binding.imgLogo.setOnClickListener(v -> {
             verificaPermissaoGaleria();
         });
@@ -104,11 +107,11 @@ public class LojaConfigActivity extends AppCompatActivity {
         }
 
         if (loja.getPedidoMinimo() != 0) {
-            binding.edtPedidoMinimo.setText(String.valueOf(loja.getPedidoMinimo() * 10));
+            binding.edtPedidoMinimo.setText(String.format("%.1f", loja.getPedidoMinimo() * 10));
         }
 
         if (loja.getFreteGratis() != 0) {
-            binding.edtFrete.setText(String.valueOf(loja.getFreteGratis() * 10));
+            binding.edtFrete.setText(String.format("%.1f", loja.getFreteGratis() * 10));
         }
     }
 
@@ -118,33 +121,35 @@ public class LojaConfigActivity extends AppCompatActivity {
         double pedidoMinimo = (double) binding.edtPedidoMinimo.getRawValue() / 100;
         double freteGratis = (double) binding.edtFrete.getRawValue() / 100;
 
-        if (caminhoImagem != null) {
-            if (!nomeLoja.isEmpty()) {
-                if (!cnpj.isEmpty()) {
-                    if (cnpj.length() == 18) {
+        if (!nomeLoja.isEmpty()) {
+            if (!cnpj.isEmpty()) {
+                if (cnpj.length() == 18) {
 
-                        loja.setNome(nomeLoja);
-                        loja.setCnpj(cnpj);
-                        loja.setPedidoMinimo(pedidoMinimo);
-                        loja.setFreteGratis(freteGratis);
+                    loja.setNome(nomeLoja);
+                    loja.setCnpj(cnpj);
+                    loja.setPedidoMinimo(pedidoMinimo);
+                    loja.setFreteGratis(freteGratis);
 
+                    if (caminhoImagem != null) {
                         salvarImagemFirebase();
-
+                    } else if (loja.getUrlLogo() != null){
+                        loja.salvar();
                     } else {
-                        binding.edtCNPJ.setError("CNPJ inválido.");
-                        binding.edtCNPJ.requestFocus();
+                        ocultaTeclado();
+                        Toast.makeText(this, "Escolha uma logo para sua loja", Toast.LENGTH_SHORT).show();
                     }
+
                 } else {
-                    binding.edtCNPJ.setError("Informe o CNPJ da loja.");
+                    binding.edtCNPJ.setError("CNPJ inválido.");
                     binding.edtCNPJ.requestFocus();
                 }
             } else {
-                binding.edtLoja.setError("Informe um nome para sua loja.");
-                binding.edtLoja.requestFocus();
+                binding.edtCNPJ.setError("Informe o CNPJ da loja.");
+                binding.edtCNPJ.requestFocus();
             }
         } else {
-            ocultaTeclado();
-            Toast.makeText(this, "Escolha uma logo para sua loja", Toast.LENGTH_SHORT).show();
+            binding.edtLoja.setError("Informe um nome para sua loja.");
+            binding.edtLoja.requestFocus();
         }
     }
 
@@ -160,6 +165,8 @@ public class LojaConfigActivity extends AppCompatActivity {
 
             loja.setUrlLogo(task.getResult().toString());
             loja.salvar();
+
+            caminhoImagem = null;
 
         })).addOnFailureListener(e -> Toast.makeText(
                 this, "Ocorreu um erro com o upload, tente novamente.",
