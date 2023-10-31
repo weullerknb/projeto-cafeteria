@@ -14,7 +14,9 @@ import android.view.ViewGroup;
 import com.example.projetocafeteria.R;
 import com.example.projetocafeteria.activity.loja.LojaConfigActivity;
 import com.example.projetocafeteria.activity.loja.LojaRecebimentosActivity;
+import com.example.projetocafeteria.activity.usuario.MainActivityUsuario;
 import com.example.projetocafeteria.databinding.FragmentLojaConfigBinding;
+import com.example.projetocafeteria.helper.FirebaseHelper;
 
 public class LojaConfigFragment extends Fragment {
 
@@ -41,6 +43,12 @@ public class LojaConfigFragment extends Fragment {
 
         binding.btnPagamentos.setOnClickListener(v -> {
             startActivity(LojaRecebimentosActivity.class);
+        });
+
+        binding.btnDeslogar.setOnClickListener(v -> {
+            FirebaseHelper.getAuth().signOut();
+            requireActivity().finish();
+            startActivity(MainActivityUsuario.class);
         });
     }
 
