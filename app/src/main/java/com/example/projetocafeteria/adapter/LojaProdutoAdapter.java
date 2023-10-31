@@ -6,13 +6,17 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.projetocafeteria.R;
+import com.example.projetocafeteria.helper.FirebaseHelper;
 import com.example.projetocafeteria.model.Produto;
 import com.example.projetocafeteria.util.GetMask;
+import com.like.LikeButton;
+import com.like.OnLikeListener;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -21,12 +25,18 @@ public class LojaProdutoAdapter extends RecyclerView.Adapter<LojaProdutoAdapter.
 
     private List<Produto> produtoList;
     private Context context;
+    private boolean favorito;
+    private List<String> idsFavoritos;
     private OnClickLister onClickLister;
+    private OnClickFavorito onClickFavorito;
 
-    public LojaProdutoAdapter(List<Produto> produtoList, Context context, OnClickLister onClickLister) {
+    public LojaProdutoAdapter(List<Produto> produtoList, Context context, boolean favorito, List<String> idsFavoritos, OnClickLister onClickLister, OnClickFavorito onClickFavorito) {
         this.produtoList = produtoList;
         this.context = context;
+        this.favorito = favorito;
+        this.idsFavoritos = idsFavoritos;
         this.onClickLister = onClickLister;
+        this.onClickFavorito = onClickFavorito;
     }
 
     @NonNull
@@ -41,6 +51,12 @@ public class LojaProdutoAdapter extends RecyclerView.Adapter<LojaProdutoAdapter.
         Produto produto = produtoList.get(position);
 
         holder.txtNomeProduto.setText(produto.getTitulo());
+
+        if (favorito) {
+            if (idsFavoritos.contains(produto.getId())) {
+                holder.likeButton.setLiked(true);
+            }
+        }
 
         if (produto.getValorAntigo() > 0) {
 
@@ -57,6 +73,23 @@ public class LojaProdutoAdapter extends RecyclerView.Adapter<LojaProdutoAdapter.
         } else {
             holder.txtDescontoProduto.setVisibility(View.GONE);
         }
+
+        holder.likeButton.setOnLikeListener(new OnLikeListener() {
+            @Override
+            public void liked(LikeButton likeButton) {
+                if (FirebaseHelper.getAutenticado()) {
+                    onClickFavorito.onClickFavorito(produto.getId());
+                } else {
+                    Toast.makeText(context, "Entre na sua conta para adicionar aos favoritos.", Toast.LENGTH_SHORT).show();
+                    holder.likeButton.setLiked(false);
+                }
+            }
+
+            @Override
+            public void unLiked(LikeButton likeButton) {
+                onClickFavorito.onClickFavorito(produto.getId());
+            }
+        });
 
         for (int i = 0; i < produto.getUrlsImagens().size(); i++) {
             if (produto.getUrlsImagens().get(i).getIndex() == 0) {
@@ -78,10 +111,15 @@ public class LojaProdutoAdapter extends RecyclerView.Adapter<LojaProdutoAdapter.
         void onClick(Produto produto);
     }
 
+    public interface OnClickFavorito {
+        void onClickFavorito(String idProduto);
+    }
+
     static class MyViewHolder extends RecyclerView.ViewHolder {
 
         ImageView imagemProduto;
         TextView txtNomeProduto, txtValorProduto, txtDescontoProduto;
+        LikeButton likeButton;
 
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -90,7 +128,7 @@ public class LojaProdutoAdapter extends RecyclerView.Adapter<LojaProdutoAdapter.
             txtNomeProduto = itemView.findViewById(R.id.txtNomeProduto);
             txtValorProduto = itemView.findViewById(R.id.txtValorProduto);
             txtDescontoProduto = itemView.findViewById(R.id.txtDescontoProduto);
-
+            likeButton = itemView.findViewById(R.id.likeButton);
         }
     }
 }

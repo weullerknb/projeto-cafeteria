@@ -19,6 +19,7 @@ import com.example.projetocafeteria.adapter.LojaProdutoAdapter;
 import com.example.projetocafeteria.databinding.FragmentUsuarioHomeBinding;
 import com.example.projetocafeteria.helper.FirebaseHelper;
 import com.example.projetocafeteria.model.Categoria;
+import com.example.projetocafeteria.model.Favorito;
 import com.example.projetocafeteria.model.Produto;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -29,12 +30,13 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class UsuarioHomeFragment extends Fragment implements CategoriaAdapter.OnClick, LojaProdutoAdapter.OnClickLister {
+public class UsuarioHomeFragment extends Fragment implements CategoriaAdapter.OnClick, LojaProdutoAdapter.OnClickLister, LojaProdutoAdapter.OnClickFavorito {
 
     private FragmentUsuarioHomeBinding binding;
 
     private final List<Categoria> categoriaList = new ArrayList<>();
     private final List<Produto> produtoList = new ArrayList<>();
+    private final List<String> idsFavoritos = new ArrayList<>();
 
     private CategoriaAdapter categoriaAdapter;
     private LojaProdutoAdapter lojaProdutoAdapter;
@@ -55,6 +57,34 @@ public class UsuarioHomeFragment extends Fragment implements CategoriaAdapter.On
 
         recuperaCategorias();
         recuperaProdutos();
+        recuperaFavoritos();
+    }
+
+    private void recuperaFavoritos() {
+        if (FirebaseHelper.getAutenticado()) {
+            DatabaseReference favoritoRef = FirebaseHelper.getDatabaseReference()
+                    .child("favoritos")
+                    .child(FirebaseHelper.getIdFirebase());
+            favoritoRef.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+
+                    idsFavoritos.clear();
+
+                    for (DataSnapshot ds : snapshot.getChildren()) {
+                        String idFavorito = ds.getValue(String.class);
+                        idsFavoritos.add(idFavorito);
+                    }
+
+                    categoriaAdapter.notifyDataSetChanged();
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
+                }
+            });
+        }
     }
 
     private void configRvCategorias() {
@@ -92,7 +122,7 @@ public class UsuarioHomeFragment extends Fragment implements CategoriaAdapter.On
     private void configRvProdutos() {
         binding.rvProdutos.setLayoutManager(new GridLayoutManager(requireContext(), 2));
         binding.rvProdutos.setHasFixedSize(true);
-        lojaProdutoAdapter = new LojaProdutoAdapter(produtoList, requireContext(), this);
+        lojaProdutoAdapter = new LojaProdutoAdapter(produtoList, requireContext(), true, idsFavoritos, this, this);
         binding.rvProdutos.setAdapter(lojaProdutoAdapter);
     }
 
@@ -146,5 +176,15 @@ public class UsuarioHomeFragment extends Fragment implements CategoriaAdapter.On
     @Override
     public void onClick(Produto produto) {
 
+    }
+
+    @Override
+    public void onClickFavorito(String idProduto) {
+        if (!idsFavoritos.contains(idProduto)) {
+            idsFavoritos.add(idProduto);
+        } else {
+            idsFavoritos.remove(idProduto);
+        }
+        Favorito.salvar(idsFavoritos);
     }
 }
