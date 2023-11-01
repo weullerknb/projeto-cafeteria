@@ -1,5 +1,6 @@
 package com.example.projetocafeteria.fragment.usuario;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -14,6 +15,7 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.example.projetocafeteria.R;
+import com.example.projetocafeteria.activity.usuario.DetalhesProdutoActivity;
 import com.example.projetocafeteria.adapter.CategoriaAdapter;
 import com.example.projetocafeteria.adapter.LojaProdutoAdapter;
 import com.example.projetocafeteria.databinding.FragmentUsuarioHomeBinding;
@@ -175,7 +177,9 @@ public class UsuarioHomeFragment extends Fragment implements CategoriaAdapter.On
 
     @Override
     public void onClick(Produto produto) {
-
+        Intent intent = new Intent(requireContext(), DetalhesProdutoActivity.class);
+        intent.putExtra("produtoSelecionado", produto);
+        startActivity(intent);
     }
 
     @Override
