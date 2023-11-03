@@ -35,7 +35,7 @@ public class DbHelper extends SQLiteOpenHelper {
             db.execSQL(tbItemPedido);
             Log.i("INFODB:", " Sucesso ao criar as tabelas");
         } catch (Exception e) {
-            Log.i("INFODB:", " Erro ao criar as tabelas");
+            Log.i("INFODB:", " Erro ao criar as tabelas" + e.getMessage());
         }
     }
 
