@@ -28,4 +28,12 @@
     <style name="EditTextTheme">
         <item name="colorPrimary">@color/cor_secundaria</item>
     </style>
+    
+    <style name="Search_View_Theme">
+        <item name="colorAccent">@color/cor_secundaria</item>
+        <item name="colorControlNormal">@color/cor_secundaria</item>
+        <item name="android:editTextColor">@color/cor_secundaria</item>
+        <item name="android:textColorHint">@color/cinza</item>
+        <item name="android:textSize">14sp</item>
+    </style>
 </resources>
