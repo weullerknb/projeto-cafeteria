@@ -10,12 +10,15 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
 
+import com.example.projetocafeteria.DAO.ItemDAO;
+import com.example.projetocafeteria.DAO.ItemPedidoDAO;
 import com.example.projetocafeteria.R;
 import com.example.projetocafeteria.adapter.LojaProdutoAdapter;
 import com.example.projetocafeteria.adapter.SliderAdapter;
 import com.example.projetocafeteria.databinding.ActivityDetalhesProdutoBinding;
 import com.example.projetocafeteria.helper.FirebaseHelper;
 import com.example.projetocafeteria.model.Favorito;
+import com.example.projetocafeteria.model.ItemPedido;
 import com.example.projetocafeteria.model.Produto;
 import com.example.projetocafeteria.util.GetMask;
 import com.google.firebase.database.DataSnapshot;
@@ -42,11 +45,17 @@ public class DetalhesProdutoActivity extends AppCompatActivity implements LojaPr
 
     private Produto produtoSelecionado;
 
+    private ItemDAO itemDAO;
+    private ItemPedidoDAO itemPedidoDAO;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = ActivityDetalhesProdutoBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+
+        itemDAO = new ItemDAO(this);
+        itemPedidoDAO = new ItemPedidoDAO(this);
 
         configClicks();
 
@@ -79,6 +88,19 @@ public class DetalhesProdutoActivity extends AppCompatActivity implements LojaPr
                 Favorito.salvar(idsFavoritos);
             }
         });
+
+        binding.btnAddCarrinho.setOnClickListener(v -> addCarrinho());
+    }
+
+    private void addCarrinho() {
+        ItemPedido itemPedido = new ItemPedido();
+        itemPedido.setIdProduto(produtoSelecionado.getId());
+        itemPedido.setQuantidade(1);
+        itemPedido.setValor(produtoSelecionado.getValorAtual());
+
+        itemPedidoDAO.salvar(itemPedido);
+
+        itemDAO.salvar(produtoSelecionado);
     }
 
     private void configRvProdutos() {
