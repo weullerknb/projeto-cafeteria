@@ -17,6 +17,7 @@ import com.example.projetocafeteria.R;
 import com.example.projetocafeteria.adapter.CarrinhoAdapter;
 import com.example.projetocafeteria.databinding.FragmentUsuarioCarrinhoBinding;
 import com.example.projetocafeteria.model.ItemPedido;
+import com.example.projetocafeteria.model.Produto;
 import com.example.projetocafeteria.util.GetMask;
 
 import java.util.ArrayList;
@@ -60,11 +61,30 @@ public class UsuarioCarrinhoFragment extends Fragment implements CarrinhoAdapter
         carrinhoAdapter = new CarrinhoAdapter(itemPedidoList, itemPedidoDAO, requireContext(), this);
         binding.rvProdutos.setAdapter(carrinhoAdapter);
 
-        configSAldoCarrinho();
+        configSaldoCarrinho();
     }
 
-    private void configSAldoCarrinho() {
+    private void configSaldoCarrinho() {
         binding.textValor.setText(getString(R.string.valor_total_carrinho, GetMask.getValor(itemPedidoDAO.getTotalCarrinho())));
+    }
+
+    private void configQtdProduto(int position, String operacao) {
+
+        ItemPedido itemPedido = itemPedidoList.get(position);
+
+        if (operacao.equals("mais")) {
+            itemPedido.setQuantidade(itemPedido.getQuantidade() + 1);
+            itemPedidoDAO.atualizar(itemPedido);
+            itemPedidoList.set(position, itemPedido);
+        } else {
+            if (itemPedido.getQuantidade() > 1) {
+                itemPedido.setQuantidade(itemPedido.getQuantidade() - 1);
+                itemPedidoDAO.atualizar(itemPedido);
+                itemPedidoList.set(position, itemPedido);
+            }
+        }
+        carrinhoAdapter.notifyDataSetChanged();
+        configSaldoCarrinho();
     }
 
     @Override
@@ -76,5 +96,15 @@ public class UsuarioCarrinhoFragment extends Fragment implements CarrinhoAdapter
     @Override
     public void onClickLister(int position, String operacao) {
 
+        switch (operacao) {
+            case "detalhe":
+                break;
+            case "remover":
+                break;
+            case "menos":
+            case "mais":
+                configQtdProduto(position, operacao);
+                break;
+        }
     }
 }
