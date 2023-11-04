@@ -17,6 +17,7 @@ import com.example.projetocafeteria.R;
 import com.example.projetocafeteria.adapter.CarrinhoAdapter;
 import com.example.projetocafeteria.databinding.FragmentUsuarioCarrinhoBinding;
 import com.example.projetocafeteria.model.ItemPedido;
+import com.example.projetocafeteria.util.GetMask;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -58,6 +59,12 @@ public class UsuarioCarrinhoFragment extends Fragment implements CarrinhoAdapter
 
         carrinhoAdapter = new CarrinhoAdapter(itemPedidoList, itemPedidoDAO, requireContext(), this);
         binding.rvProdutos.setAdapter(carrinhoAdapter);
+
+        configSAldoCarrinho();
+    }
+
+    private void configSAldoCarrinho() {
+        binding.textValor.setText(getString(R.string.valor_total_carrinho, GetMask.getValor(itemPedidoDAO.getTotalCarrinho())));
     }
 
     @Override
