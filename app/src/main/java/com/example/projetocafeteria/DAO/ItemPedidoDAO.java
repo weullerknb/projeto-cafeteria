@@ -45,7 +45,7 @@ public class ItemPedidoDAO {
         Produto produto = null;
         List<ImagemUpload> uploadList = new ArrayList<>();
 
-        String sql = "SELECT * FROM" + DbHelper.TABELA_ITEM + "WHERE id = " + idProduto + ";";
+        String sql = "SELECT * FROM " + DbHelper.TABELA_ITEM + " WHERE id = " + idProduto + ";";
         Cursor cursor = read.rawQuery(sql, null);
 
         while (cursor.moveToNext()) {
@@ -66,7 +66,33 @@ public class ItemPedidoDAO {
             produto.setUrlsImagens(uploadList);
         }
 
+        cursor.close();
         return produto;
+    }
+
+    public List<ItemPedido> getList() {
+        List<ItemPedido> itemPedidoList = new ArrayList<>();
+
+        String sql = "SELECT * FROM " + DbHelper.TABELA_ITEM_PEDIDO + ";";
+        Cursor cursor = read.rawQuery(sql, null);
+
+        while (cursor.moveToNext()) {
+            int id = cursor.getInt(cursor.getColumnIndexOrThrow("id"));
+            String id_produto = cursor.getString(cursor.getColumnIndexOrThrow("id_produto"));
+            double valor = cursor.getDouble(cursor.getColumnIndexOrThrow("valor"));
+            int quantidade = cursor.getInt(cursor.getColumnIndexOrThrow("quantidade"));
+
+            ItemPedido itemPedido = new ItemPedido();
+            itemPedido.setId(id);
+            itemPedido.setIdProduto(id_produto);
+            itemPedido.setValor(valor);
+            itemPedido.setQuantidade(quantidade);
+
+            itemPedidoList.add(itemPedido);
+        }
+
+        cursor.close();
+        return itemPedidoList;
     }
 
 }
