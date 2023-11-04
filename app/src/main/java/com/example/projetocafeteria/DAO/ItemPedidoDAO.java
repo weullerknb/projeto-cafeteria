@@ -2,10 +2,16 @@ package com.example.projetocafeteria.DAO;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
+import com.example.projetocafeteria.model.ImagemUpload;
 import com.example.projetocafeteria.model.ItemPedido;
+import com.example.projetocafeteria.model.Produto;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class ItemPedidoDAO {
 
@@ -34,4 +40,33 @@ public class ItemPedidoDAO {
 
         return true;
     }
+
+    public Produto getProduto(int idProduto) {
+        Produto produto = null;
+        List<ImagemUpload> uploadList = new ArrayList<>();
+
+        String sql = "SELECT * FROM" + DbHelper.TABELA_ITEM + "WHERE id = " + idProduto + ";";
+        Cursor cursor = read.rawQuery(sql, null);
+
+        while (cursor.moveToNext()) {
+            int id = cursor.getInt(cursor.getColumnIndexOrThrow("id"));
+            String id_firebase = cursor.getString(cursor.getColumnIndexOrThrow("id_firebase"));
+            String nome = cursor.getString(cursor.getColumnIndexOrThrow("nome"));
+            double valor = cursor.getDouble(cursor.getColumnIndexOrThrow("valor"));
+            String url_imagem = cursor.getString(cursor.getColumnIndexOrThrow("url_imagem"));
+
+            produto = new Produto();
+            produto.setIdLocal(id);
+            produto.setId(id_firebase);
+            produto.setTitulo(nome);
+            produto.setValorAtual(valor);
+
+            uploadList.add(new ImagemUpload(0, url_imagem));
+
+            produto.setUrlsImagens(uploadList);
+        }
+
+        return produto;
+    }
+
 }
