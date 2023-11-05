@@ -73,6 +73,13 @@ public class UsuarioCarrinhoFragment extends Fragment implements CarrinhoAdapter
         configTotalCarrinho();
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        configInfo();
+    }
+
     private void configTotalCarrinho() {
         binding.textValor.setText(getString(R.string.valor_total_carrinho, GetMask.getValor(itemPedidoDAO.getTotalCarrinho())));
     }
@@ -96,7 +103,7 @@ public class UsuarioCarrinhoFragment extends Fragment implements CarrinhoAdapter
         configTotalCarrinho();
     }
 
-    private void showDialogRemover(Produto produto) {
+    private void showDialogRemover(Produto produto, int position) {
         AlertDialog.Builder builder = new AlertDialog.Builder(requireContext(), R.style.CustomAlertDialog);
 
         DialogRemoverCarrinhoBinding dialogBinding = DialogRemoverCarrinhoBinding
@@ -114,14 +121,38 @@ public class UsuarioCarrinhoFragment extends Fragment implements CarrinhoAdapter
         });
 
         dialogBinding.btnRemover.setOnClickListener(v -> {
-            Toast.makeText(requireContext(), "Produto removido com sucesso!", Toast.LENGTH_SHORT).show();
+            removerProdutoCarrinho(position);
             dialog.dismiss();
+            Toast.makeText(requireContext(), "Produto removido com sucesso!", Toast.LENGTH_SHORT).show();
         });
 
         builder.setView(dialogBinding.getRoot());
 
         dialog = builder.create();
         dialog.show();
+    }
+
+    private void removerProdutoCarrinho(int position) {
+        ItemPedido itemPedido = itemPedidoList.get(position);
+
+        itemPedidoList.remove(itemPedido);
+
+        itemPedidoDAO.remover(itemPedido);
+        itemDAO.remover(itemPedido);
+
+        carrinhoAdapter.notifyDataSetChanged();
+
+        configInfo();
+
+        configTotalCarrinho();
+    }
+
+    private void configInfo() {
+        if (itemPedidoList.isEmpty()) {
+            binding.textInfo.setVisibility(View.VISIBLE);
+        } else {
+            binding.textInfo.setVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -140,7 +171,7 @@ public class UsuarioCarrinhoFragment extends Fragment implements CarrinhoAdapter
             case "detalhe":
                 break;
             case "remover":
-                showDialogRemover(produto);
+                showDialogRemover(produto, position);
                 break;
             case "menos":
             case "mais":
