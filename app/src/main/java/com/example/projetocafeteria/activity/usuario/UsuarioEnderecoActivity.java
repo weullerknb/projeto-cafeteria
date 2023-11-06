@@ -2,6 +2,7 @@ package com.example.projetocafeteria.activity.usuario;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import com.example.projetocafeteria.R;
@@ -19,5 +20,13 @@ public class UsuarioEnderecoActivity extends AppCompatActivity {
 
         binding.include.textTitulo.setText("Meus Endereços");
         binding.include.include.ibVoltar.setOnClickListener(v -> finish());
+
+        configClicks();
+    }
+
+    private void configClicks() {
+        binding.include.btnAdd.setOnClickListener(v ->
+                startActivity(new Intent(this, UsuarioFormEnderecoActivity.class))
+        );
     }
 }
