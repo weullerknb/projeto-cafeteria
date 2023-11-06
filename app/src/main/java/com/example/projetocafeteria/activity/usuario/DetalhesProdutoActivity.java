@@ -1,13 +1,14 @@
 package com.example.projetocafeteria.activity.usuario;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
+import android.view.LayoutInflater;
 import android.widget.Toast;
 
 import com.example.projetocafeteria.DAO.ItemDAO;
@@ -16,6 +17,8 @@ import com.example.projetocafeteria.R;
 import com.example.projetocafeteria.adapter.LojaProdutoAdapter;
 import com.example.projetocafeteria.adapter.SliderAdapter;
 import com.example.projetocafeteria.databinding.ActivityDetalhesProdutoBinding;
+import com.example.projetocafeteria.databinding.DialogAddItemCarrinhoBinding;
+import com.example.projetocafeteria.databinding.DialogRemoverCarrinhoBinding;
 import com.example.projetocafeteria.helper.FirebaseHelper;
 import com.example.projetocafeteria.model.Favorito;
 import com.example.projetocafeteria.model.ItemPedido;
@@ -29,6 +32,7 @@ import com.like.LikeButton;
 import com.like.OnLikeListener;
 import com.smarteist.autoimageslider.IndicatorView.animation.type.IndicatorAnimationType;
 import com.smarteist.autoimageslider.SliderAnimations;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -47,6 +51,8 @@ public class DetalhesProdutoActivity extends AppCompatActivity implements LojaPr
 
     private ItemDAO itemDAO;
     private ItemPedidoDAO itemPedidoDAO;
+
+    private AlertDialog dialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,7 +95,7 @@ public class DetalhesProdutoActivity extends AppCompatActivity implements LojaPr
             }
         });
 
-        binding.btnAddCarrinho.setOnClickListener(v -> addCarrinho());
+        binding.btnAddCarrinho.setOnClickListener(v -> showDialogCarrinho());
     }
 
     private void addCarrinho() {
@@ -188,6 +194,32 @@ public class DetalhesProdutoActivity extends AppCompatActivity implements LojaPr
         binding.textProduto.setText(produtoSelecionado.getTitulo());
         binding.textDescricao.setText(produtoSelecionado.getDescricao());
         binding.textValor.setText(getString(R.string.valor, GetMask.getValor(produtoSelecionado.getValorAtual())));
+    }
+
+    private void showDialogCarrinho() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.CustomAlertDialog);
+
+        DialogAddItemCarrinhoBinding dialogBinding = DialogAddItemCarrinhoBinding
+                .inflate(LayoutInflater.from(this));
+
+        dialogBinding.btnFechar.setOnClickListener(v -> {
+            addCarrinho();
+            dialog.dismiss();
+        });
+
+        dialogBinding.btnIrCarrinho.setOnClickListener(v -> {
+            addCarrinho();
+            Intent intent = new Intent(this, MainActivityUsuario.class);
+            intent.putExtra("id", 2);
+            startActivity(intent);
+            finish();
+            dialog.dismiss();
+        });
+
+        builder.setView(dialogBinding.getRoot());
+
+        dialog = builder.create();
+        dialog.show();
     }
 
     @Override
