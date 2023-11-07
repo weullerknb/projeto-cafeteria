@@ -1,5 +1,6 @@
 package com.example.projetocafeteria.adapter;
 
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,11 +16,13 @@ import java.util.List;
 
 public class EnderecoAdapter extends RecyclerView.Adapter<EnderecoAdapter.MyViewHolder> {
 
-    private List<Endereco> enderecoList;
-    private OnClickListener clickListener;
+    private final List<Endereco> enderecoList;
+    private final Context context;
+    private final OnClickListener clickListener;
 
-    public EnderecoAdapter(List<Endereco> enderecoList, OnClickListener clickListener) {
+    public EnderecoAdapter(List<Endereco> enderecoList, Context context, OnClickListener clickListener) {
         this.enderecoList = enderecoList;
+        this.context = context;
         this.clickListener = clickListener;
     }
 
@@ -38,7 +41,10 @@ public class EnderecoAdapter extends RecyclerView.Adapter<EnderecoAdapter.MyView
         holder.textLogradouro.setText(endereco.getLogradouro());
 
         if (!endereco.getNumero().isEmpty()) {
-            holder.textNumEndereco.setText(endereco.getNumero());
+            holder.textNumEndereco.setVisibility(View.VISIBLE);
+            holder.textNumEndereco.setText(context.getString(R.string.endereco_numero, endereco.getNumero()));
+        } else {
+            holder.textNumEndereco.setVisibility(View.GONE);
         }
 
         holder.itemView.setOnClickListener(v -> clickListener.onClick(endereco));
