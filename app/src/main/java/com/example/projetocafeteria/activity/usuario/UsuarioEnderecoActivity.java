@@ -18,8 +18,7 @@ public class UsuarioEnderecoActivity extends AppCompatActivity {
         binding = ActivityUsuarioEnderecoBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        binding.include.textTitulo.setText("Meus Endereços");
-        binding.include.include.ibVoltar.setOnClickListener(v -> finish());
+        iniciaComponentes();
 
         configClicks();
     }
@@ -28,5 +27,10 @@ public class UsuarioEnderecoActivity extends AppCompatActivity {
         binding.include.btnAdd.setOnClickListener(v ->
                 startActivity(new Intent(this, UsuarioFormEnderecoActivity.class))
         );
+    }
+
+    private void iniciaComponentes() {
+        binding.include.textTitulo.setText("Meus Endereços");
+        binding.include.include.ibVoltar.setOnClickListener(v -> finish());
     }
 }

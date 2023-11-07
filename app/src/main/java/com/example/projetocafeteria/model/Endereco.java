@@ -84,4 +84,12 @@ public class Endereco implements Serializable {
     public void setUf(String uf) {
         this.uf = uf;
     }
+
+    public void salvar() {
+        DatabaseReference enderecoRef = FirebaseHelper.getDatabaseReference()
+                .child("enderecos")
+                .child(FirebaseHelper.getIdFirebase())
+                .child(this.id);
+        enderecoRef.setValue(this);
+    }
 }
