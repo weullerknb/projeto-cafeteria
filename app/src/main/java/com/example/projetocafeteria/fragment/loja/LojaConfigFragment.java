@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 
 import com.example.projetocafeteria.R;
 import com.example.projetocafeteria.activity.loja.LojaConfigActivity;
+import com.example.projetocafeteria.activity.loja.LojaPagamentosActivity;
 import com.example.projetocafeteria.activity.loja.LojaRecebimentosActivity;
 import com.example.projetocafeteria.activity.usuario.MainActivityUsuario;
 import com.example.projetocafeteria.databinding.FragmentLojaConfigBinding;
@@ -42,7 +43,7 @@ public class LojaConfigFragment extends Fragment {
         });
 
         binding.btnPagamentos.setOnClickListener(v -> {
-            startActivity(LojaRecebimentosActivity.class);
+            startActivity(LojaPagamentosActivity.class);
         });
 
         binding.btnDeslogar.setOnClickListener(v -> {
