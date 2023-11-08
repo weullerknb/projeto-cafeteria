@@ -34,6 +34,7 @@ import com.example.projetocafeteria.helper.FirebaseHelper;
 import com.example.projetocafeteria.model.Categoria;
 import com.example.projetocafeteria.model.ImagemUpload;
 import com.example.projetocafeteria.model.Produto;
+import com.example.projetocafeteria.util.GetMask;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -115,10 +116,10 @@ public class LojaFormProdutoActivity extends AppCompatActivity implements Catego
 
         binding.edtTitulo.setText(produto.getTitulo());
         binding.edtDescricao.setText(produto.getDescricao());
-        double valorAntigo = produto.getValorAntigo() * 10;
-        double valorAtual = produto.getValorAtual() * 10;
-        binding.edtValorAntigo.setText(String.format("%.1f", valorAntigo));
-        binding.edtValorAtual.setText(String.format("%.1f", valorAtual));
+        double valorAntigo = produto.getValorAntigo();
+        double valorAtual = produto.getValorAtual();
+        binding.edtValorAntigo.setText(getString(R.string.valor, GetMask.getValor(valorAntigo)));
+        binding.edtValorAtual.setText(getString(R.string.valor, GetMask.getValor(valorAtual)));
     }
 
     private void configClicks() {

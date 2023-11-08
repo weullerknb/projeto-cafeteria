@@ -24,6 +24,7 @@ import com.example.projetocafeteria.databinding.ActivityLojaConfigBinding;
 import com.example.projetocafeteria.helper.FirebaseHelper;
 import com.example.projetocafeteria.model.ImagemUpload;
 import com.example.projetocafeteria.model.Loja;
+import com.example.projetocafeteria.util.GetMask;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -107,11 +108,11 @@ public class LojaConfigActivity extends AppCompatActivity {
         }
 
         if (loja.getPedidoMinimo() != 0) {
-            binding.edtPedidoMinimo.setText(String.format("%.1f", loja.getPedidoMinimo() * 10));
+            binding.edtPedidoMinimo.setText(getString(R.string.valor, GetMask.getValor(loja.getPedidoMinimo())));
         }
 
         if (loja.getFreteGratis() != 0) {
-            binding.edtFrete.setText(String.format("%.1f", loja.getFreteGratis() * 10));
+            binding.edtFrete.setText(getString(R.string.valor, GetMask.getValor(loja.getFreteGratis())));
         }
     }
 
