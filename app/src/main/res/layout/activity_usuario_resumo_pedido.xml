@@ -7,7 +7,7 @@
     tools:context=".activity.usuario.UsuarioResumoPedidoActivity">
 
     <include
-        android:id="@+id/include2"
+        android:id="@+id/include"
         layout="@layout/toolbar_volta"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -22,7 +22,7 @@
         android:padding="10dp"
         android:src="@drawable/ic_inico_marrom"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/include2" />
+        app:layout_constraintTop_toBottomOf="@+id/include" />
 
     <TextView
         android:id="@+id/textView13"
@@ -94,6 +94,7 @@
         app:layout_constraintTop_toTopOf="@+id/imageView4" />
 
     <LinearLayout
+        android:id="@+id/linearLayout7"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
@@ -111,17 +112,17 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:textSize="12sp"
-                android:text="Produtos"/>
+                android:text="Produtos"
+                android:textSize="12sp" />
 
             <TextView
                 android:id="@+id/textValorProdutos"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:text="R$ 0,00"
                 android:textAlignment="textEnd"
-                android:textSize="12sp"
-                tools:text="R$ 109,99"/>
+                android:textSize="12sp" />
 
         </LinearLayout>
 
@@ -135,17 +136,17 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:textSize="12sp"
-                android:text="Frete"/>
+                android:text="Frete"
+                android:textSize="12sp" />
 
             <TextView
                 android:id="@+id/textValorFrete"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:text="R$ 0,00"
                 android:textAlignment="textEnd"
-                android:textSize="12sp"
-                tools:text="R$ 12,90"/>
+                android:textSize="12sp" />
 
         </LinearLayout>
 
@@ -159,23 +160,33 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:textSize="12sp"
                 android:text="Total à vista"
-                android:textColor="@color/black"/>
+                android:textColor="@color/black"
+                android:textSize="12sp" />
 
             <TextView
                 android:id="@+id/textValorTotal"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:text="R$ 0,00"
                 android:textAlignment="textEnd"
-                android:textSize="12sp"
-                tools:text="R$ 122,89"
-                android:textColor="@color/black"/>
+                android:textColor="@color/black"
+                android:textSize="12sp" />
 
         </LinearLayout>
 
     </LinearLayout>
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:indeterminateTint="@color/cor_secundaria"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout7" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/btnAddCarrinho"
@@ -212,7 +223,7 @@
             app:layout_constraintBottom_toBottomOf="@+id/btnAddCarrinho"
             app:layout_constraintStart_toStartOf="@+id/btnAddCarrinho"
             app:layout_constraintTop_toTopOf="@+id/btnAddCarrinho"
-            tools:text="TOTAL: R$ 122,89" />
+            android:text="TOTAL: R$ 0,00" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

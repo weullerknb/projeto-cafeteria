@@ -18,7 +18,9 @@ import com.example.projetocafeteria.DAO.ItemDAO;
 import com.example.projetocafeteria.DAO.ItemPedidoDAO;
 import com.example.projetocafeteria.R;
 import com.example.projetocafeteria.activity.loja.LojaFormProdutoActivity;
+import com.example.projetocafeteria.activity.usuario.UsuarioResumoPedidoActivity;
 import com.example.projetocafeteria.adapter.CarrinhoAdapter;
+import com.example.projetocafeteria.autenticacao.LoginActivity;
 import com.example.projetocafeteria.databinding.DialogLojaProdutoBinding;
 import com.example.projetocafeteria.databinding.DialogRemoverCarrinhoBinding;
 import com.example.projetocafeteria.databinding.FragmentUsuarioCarrinhoBinding;
@@ -71,6 +73,27 @@ public class UsuarioCarrinhoFragment extends Fragment implements CarrinhoAdapter
         configRv();
 
         recuperaFavoritos();
+
+        configClicks();
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        configInfo();
+    }
+
+    private void configClicks() {
+        binding.btnContinuar.setOnClickListener(v -> {
+            Intent intent;
+            if (FirebaseHelper.getAutenticado()) {
+                intent = new Intent(requireContext(), UsuarioResumoPedidoActivity.class);
+            } else {
+                intent = new Intent(requireContext(), LoginActivity.class);
+            }
+            startActivity(intent);
+        });
     }
 
     private void configRv() {
@@ -82,13 +105,6 @@ public class UsuarioCarrinhoFragment extends Fragment implements CarrinhoAdapter
         binding.rvProdutos.setAdapter(carrinhoAdapter);
 
         configTotalCarrinho();
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-
-        configInfo();
     }
 
     private void recuperaFavoritos() {
@@ -115,7 +131,7 @@ public class UsuarioCarrinhoFragment extends Fragment implements CarrinhoAdapter
     }
 
     private void configTotalCarrinho() {
-        binding.textValor.setText(getString(R.string.valor_total_carrinho, GetMask.getValor(itemPedidoDAO.getTotalCarrinho())));
+        binding.textValor.setText(getString(R.string.valor_total_carrinho, GetMask.getValor(itemPedidoDAO.getTotalPedido())));
     }
 
     private void configQtdProduto(int position, String operacao) {
