@@ -108,6 +108,9 @@ public class UsuarioSelecionaEnderecoActivity extends AppCompatActivity implemen
 
     @Override
     public void onClick(Endereco endereco) {
-        Toast.makeText(this, endereco.getNomeEndereco(), Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent();
+        intent.putExtra("enderecoSelecionado", endereco);
+        setResult(RESULT_OK, intent);
+        finish();
     }
 }
