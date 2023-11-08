@@ -3,10 +3,10 @@ package com.example.projetocafeteria.activity.usuario;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
-import com.example.projetocafeteria.DAO.ItemDAO;
 import com.example.projetocafeteria.DAO.ItemPedidoDAO;
 import com.example.projetocafeteria.R;
 import com.example.projetocafeteria.databinding.ActivityUsuarioResumoPedidoBinding;
@@ -26,10 +26,7 @@ public class UsuarioResumoPedidoActivity extends AppCompatActivity {
 
     private ActivityUsuarioResumoPedidoBinding binding;
 
-    private List<Endereco> enderecoList = new ArrayList<>();
-
-    private ItemDAO itemDAO;
-    private ItemPedidoDAO itemPedidoDAO;
+    private final List<Endereco> enderecoList = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,11 +35,18 @@ public class UsuarioResumoPedidoActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
 
         recuperaEndereco();
+
+        configClicks();
+    }
+
+    private void configClicks() {
+        binding.btnAlterarEndereco.setOnClickListener(v -> {
+            startActivity(new Intent(this, UsuarioSelecionaEnderecoActivity.class));
+        });
     }
 
     private void configDados() {
-        itemDAO = new ItemDAO(this);
-        itemPedidoDAO = new ItemPedidoDAO(this);
+        ItemPedidoDAO itemPedidoDAO = new ItemPedidoDAO(this);
 
         binding.include.textTitulo.setText("Resumo Pedido");
         binding.include.include.ibVoltar.setOnClickListener(v -> finish());
