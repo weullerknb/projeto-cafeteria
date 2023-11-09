@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
@@ -28,6 +29,8 @@ public class UsuarioSelecionaPagamentoActivity extends AppCompatActivity impleme
     private UsuarioPagamentoAdapter usuarioPagamentoAdapter;
     private final List<FormaPagamento> formaPagamentoList = new ArrayList<>();
 
+    private FormaPagamento formaPagamento = null;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,6 +48,16 @@ public class UsuarioSelecionaPagamentoActivity extends AppCompatActivity impleme
 
     private void configClicks() {
         binding.include.include.ibVoltar.setOnClickListener(v -> finish());
+
+        binding.btnContinuar.setOnClickListener(v -> {
+            if (formaPagamento != null) {
+                Intent intent = new Intent(this, UsuarioResumoPedidoActivity.class);
+                intent.putExtra("pagamentoSelecionado", formaPagamento);
+                startActivity(intent);
+            } else {
+                Toast.makeText(this, "Selecione uma forma de pagamento.", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void recuperaFormaPagamento() {
@@ -88,7 +101,7 @@ public class UsuarioSelecionaPagamentoActivity extends AppCompatActivity impleme
     }
 
     @Override
-    public void onClickListener(FormaPagamento formaPagamento) {
-        Toast.makeText(this, formaPagamento.getNome(), Toast.LENGTH_SHORT).show();
+    public void onClickListener(FormaPagamento pagamento) {
+        this.formaPagamento = pagamento;
     }
 }

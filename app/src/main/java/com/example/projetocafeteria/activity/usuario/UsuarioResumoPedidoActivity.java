@@ -14,6 +14,7 @@ import com.example.projetocafeteria.R;
 import com.example.projetocafeteria.databinding.ActivityUsuarioResumoPedidoBinding;
 import com.example.projetocafeteria.helper.FirebaseHelper;
 import com.example.projetocafeteria.model.Endereco;
+import com.example.projetocafeteria.model.FormaPagamento;
 import com.example.projetocafeteria.util.GetMask;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -30,6 +31,8 @@ public class UsuarioResumoPedidoActivity extends AppCompatActivity {
 
     private final List<Endereco> enderecoList = new ArrayList<>();
 
+    private FormaPagamento formaPagamento;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,6 +42,13 @@ public class UsuarioResumoPedidoActivity extends AppCompatActivity {
         recuperaEndereco();
 
         configClicks();
+
+        getExtra();
+    }
+
+    private void getExtra() {
+        formaPagamento = (FormaPagamento) getIntent().getExtras().getSerializable("pagamentoSelecionado");
+        configDados();
     }
 
     private void configClicks() {
