@@ -1,16 +1,24 @@
 package com.example.projetocafeteria.activity.usuario;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Toast;
 
 import com.example.projetocafeteria.adapter.UsuarioPagamentoAdapter;
 import com.example.projetocafeteria.databinding.ActivityUsuarioSelecionaPagamentoBinding;
+import com.example.projetocafeteria.helper.FirebaseHelper;
 import com.example.projetocafeteria.model.FormaPagamento;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class UsuarioSelecionaPagamentoActivity extends AppCompatActivity implements UsuarioPagamentoAdapter.OnClick {
@@ -18,7 +26,7 @@ public class UsuarioSelecionaPagamentoActivity extends AppCompatActivity impleme
     private ActivityUsuarioSelecionaPagamentoBinding binding;
 
     private UsuarioPagamentoAdapter usuarioPagamentoAdapter;
-    private List<FormaPagamento> formaPagamentoList = new ArrayList<>();
+    private final List<FormaPagamento> formaPagamentoList = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,10 +39,41 @@ public class UsuarioSelecionaPagamentoActivity extends AppCompatActivity impleme
         configClicks();
 
         configRv();
+
+        recuperaFormaPagamento();
     }
 
     private void configClicks() {
         binding.include.include.ibVoltar.setOnClickListener(v -> finish());
+    }
+
+    private void recuperaFormaPagamento() {
+        DatabaseReference pagamentoRef = FirebaseHelper.getDatabaseReference()
+                .child("formapagamento");
+        pagamentoRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    formaPagamentoList.clear();
+                    for (DataSnapshot ds : snapshot.getChildren()) {
+                        FormaPagamento formaPagamento = ds.getValue(FormaPagamento.class);
+                        formaPagamentoList.add(formaPagamento);
+                    }
+                    binding.textInfo.setText("");
+                } else {
+                    binding.textInfo.setText("Nenhuma forma de pagamento cadastrada.");
+                }
+
+                binding.progressBar.setVisibility(View.GONE);
+                Collections.reverse(formaPagamentoList);
+                usuarioPagamentoAdapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
     }
 
     private void configRv() {

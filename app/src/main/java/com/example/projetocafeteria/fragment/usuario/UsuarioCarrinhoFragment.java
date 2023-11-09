@@ -19,6 +19,7 @@ import com.example.projetocafeteria.DAO.ItemPedidoDAO;
 import com.example.projetocafeteria.R;
 import com.example.projetocafeteria.activity.loja.LojaFormProdutoActivity;
 import com.example.projetocafeteria.activity.usuario.UsuarioResumoPedidoActivity;
+import com.example.projetocafeteria.activity.usuario.UsuarioSelecionaPagamentoActivity;
 import com.example.projetocafeteria.adapter.CarrinhoAdapter;
 import com.example.projetocafeteria.autenticacao.LoginActivity;
 import com.example.projetocafeteria.databinding.DialogLojaProdutoBinding;
@@ -88,7 +89,7 @@ public class UsuarioCarrinhoFragment extends Fragment implements CarrinhoAdapter
         binding.btnContinuar.setOnClickListener(v -> {
             Intent intent;
             if (FirebaseHelper.getAutenticado()) {
-                intent = new Intent(requireContext(), UsuarioResumoPedidoActivity.class);
+                intent = new Intent(requireContext(), UsuarioSelecionaPagamentoActivity.class);
             } else {
                 intent = new Intent(requireContext(), LoginActivity.class);
             }
