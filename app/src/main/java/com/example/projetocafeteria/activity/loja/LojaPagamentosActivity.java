@@ -2,9 +2,9 @@ package com.example.projetocafeteria.activity.loja;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 
-import com.example.projetocafeteria.R;
 import com.example.projetocafeteria.databinding.ActivityLojaPagamentosBinding;
 
 public class LojaPagamentosActivity extends AppCompatActivity {
@@ -18,6 +18,12 @@ public class LojaPagamentosActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
 
         iniciaComponentes();
+
+        configClicks();
+    }
+
+    private void configClicks() {
+        binding.include.btnAdd.setOnClickListener(v -> startActivity(new Intent(this, LojaFormPagamentoActivity.class)));
     }
 
     private void iniciaComponentes() {
