@@ -11,6 +11,7 @@ import android.widget.Toast;
 import com.example.projetocafeteria.R;
 import com.example.projetocafeteria.databinding.ActivityLojaFormPagamentoBinding;
 import com.example.projetocafeteria.model.FormaPagamento;
+import com.example.projetocafeteria.util.GetMask;
 
 import java.util.Locale;
 
@@ -21,6 +22,8 @@ public class LojaFormPagamentoActivity extends AppCompatActivity {
     private FormaPagamento formaPagamento;
     private String tipoValor = null;
 
+    private boolean novoPagamento = true;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -30,6 +33,30 @@ public class LojaFormPagamentoActivity extends AppCompatActivity {
         iniciaComponentes();
 
         configClicks();
+
+        getExtra();
+    }
+
+    private void getExtra() {
+        Bundle bundle = getIntent().getExtras();
+        if (bundle != null) {
+            formaPagamento = (FormaPagamento) bundle.getSerializable("formaPagamentoSelecionada");
+            configDados();
+        }
+    }
+
+    private void configDados() {
+        novoPagamento = false;
+
+        binding.edtFormaPagamento.setText(formaPagamento.getNome());
+        binding.edtDescricaoPagamento.setText(formaPagamento.getDescricao());
+        binding.edtValor.setText(getString(R.string.valor, GetMask.getValor(formaPagamento.getValor())));
+
+        if (formaPagamento.getTipoValor().equals("DESC")) {
+            binding.rgTipo.check(R.id.rbDesconto);
+        } else {
+            binding.rgTipo.check(R.id.rbAcrescimo);
+        }
     }
 
     private void configClicks() {
@@ -64,10 +91,16 @@ public class LojaFormPagamentoActivity extends AppCompatActivity {
                 
                 if (formaPagamento.getTipoValor() != null) {
                     formaPagamento.salvar();
-                    finish();
                 } else {
                     binding.progressBar.setVisibility(View.GONE);
                     Toast.makeText(this, "Selecione o tipo do valor.", Toast.LENGTH_SHORT).show();
+                }
+                
+                if (novoPagamento) {
+                    finish();
+                } else {
+                    binding.progressBar.setVisibility(View.GONE);
+                    Toast.makeText(this, "Forma de pagamento salva com sucesso.", Toast.LENGTH_SHORT).show();
                 }
 
             } else {
