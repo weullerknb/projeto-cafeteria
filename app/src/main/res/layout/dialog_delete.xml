@@ -32,7 +32,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
-        android:text="Aperte em SIM para confirmar ou aperte \nem FECHAR para canccelar"
+        android:text="Aperte em SIM para confirmar ou aperte \nem FECHAR para cancelar"
         android:textAlignment="center"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
