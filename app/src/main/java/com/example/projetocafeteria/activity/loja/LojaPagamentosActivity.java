@@ -1,21 +1,29 @@
 package com.example.projetocafeteria.activity.loja;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
 
+import com.example.projetocafeteria.R;
 import com.example.projetocafeteria.adapter.LojaPagamentoAdapter;
 import com.example.projetocafeteria.databinding.ActivityLojaPagamentosBinding;
+import com.example.projetocafeteria.databinding.DialogDeleteBinding;
 import com.example.projetocafeteria.helper.FirebaseHelper;
+import com.example.projetocafeteria.model.Endereco;
 import com.example.projetocafeteria.model.FormaPagamento;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
+import com.tsuryo.swipeablerv.SwipeLeftRightCallback;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -28,6 +36,8 @@ public class LojaPagamentosActivity extends AppCompatActivity implements LojaPag
     private LojaPagamentoAdapter lojaPagamentoAdapter;
 
     private final List<FormaPagamento> formaPagamentoList = new ArrayList<>();
+
+    private AlertDialog dialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,11 +88,73 @@ public class LojaPagamentosActivity extends AppCompatActivity implements LojaPag
         binding.rvPagamentos.setHasFixedSize(true);
         lojaPagamentoAdapter = new LojaPagamentoAdapter( this, formaPagamentoList, this);
         binding.rvPagamentos.setAdapter(lojaPagamentoAdapter);
+
+        binding.rvPagamentos.setListener(new SwipeLeftRightCallback.Listener() {
+            @Override
+            public void onSwipedLeft(int position) {
+
+            }
+
+            @Override
+            public void onSwipedRight(int position) {
+                showDialogDelete(formaPagamentoList.get(position));
+            }
+        });
+    }
+
+    private void showDialogDelete(FormaPagamento formaPagamento) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(
+                this, R.style.CustomAlertDialog2);
+
+        DialogDeleteBinding deleteBinding = DialogDeleteBinding
+                .inflate(LayoutInflater.from(this));
+
+        deleteBinding.btnFechar.setOnClickListener(v -> {
+            dialog.dismiss();
+            lojaPagamentoAdapter.notifyDataSetChanged();
+        });
+
+        deleteBinding.textTitulo.setText("Deseja remover este pagamento ?");
+
+        deleteBinding.btnSim.setOnClickListener(v -> {
+            formaPagamentoList.remove(formaPagamento);
+
+            if (formaPagamentoList.isEmpty()) {
+                binding.textInfo.setText("Nenhuma forma de pagamento cadastrada.");
+            } else {
+                binding.textInfo.setText("");
+            }
+
+            formaPagamento.remover();
+
+            lojaPagamentoAdapter.notifyDataSetChanged();
+
+            dialog.dismiss();
+        });
+
+        builder.setView(deleteBinding.getRoot());
+
+        dialog = builder.create();
+        dialog.show();
     }
 
     private void configClicks() {
-        binding.include.btnAdd.setOnClickListener(v -> startActivity(new Intent(this, LojaFormPagamentoActivity.class)));
+        binding.include.btnAdd.setOnClickListener(v ->
+                resultLauncher.launch(new Intent(this, LojaFormPagamentoActivity.class)));
+
     }
+
+    private final ActivityResultLauncher<Intent> resultLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            result -> {
+                if (result.getResultCode() == RESULT_OK) {
+                    FormaPagamento pagamento = (FormaPagamento) result.getData().getSerializableExtra("novoPagamento");
+                    formaPagamentoList.add(pagamento);
+                    lojaPagamentoAdapter.notifyItemInserted(formaPagamentoList.size());
+                    binding.textInfo.setText("");
+                }
+            }
+    );
 
     private void iniciaComponentes() {
         binding.include.textTitulo.setText("Formas de Pagamento");
