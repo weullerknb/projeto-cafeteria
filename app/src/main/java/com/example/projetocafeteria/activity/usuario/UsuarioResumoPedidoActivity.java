@@ -9,12 +9,14 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
+import com.example.projetocafeteria.DAO.ItemDAO;
 import com.example.projetocafeteria.DAO.ItemPedidoDAO;
 import com.example.projetocafeteria.R;
 import com.example.projetocafeteria.databinding.ActivityUsuarioResumoPedidoBinding;
 import com.example.projetocafeteria.helper.FirebaseHelper;
 import com.example.projetocafeteria.model.Endereco;
 import com.example.projetocafeteria.model.FormaPagamento;
+import com.example.projetocafeteria.model.Pedido;
 import com.example.projetocafeteria.util.GetMask;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -33,11 +35,17 @@ public class UsuarioResumoPedidoActivity extends AppCompatActivity {
 
     private FormaPagamento formaPagamento;
 
+    private ItemPedidoDAO itemPedidoDAO;
+    private ItemDAO itemDAO;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = ActivityUsuarioResumoPedidoBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+
+        itemPedidoDAO = new ItemPedidoDAO(this);
+        itemDAO = new ItemDAO(this);
 
         recuperaEndereco();
 
@@ -57,6 +65,27 @@ public class UsuarioResumoPedidoActivity extends AppCompatActivity {
         });
 
         binding.btnAlterarPagamento.setOnClickListener(v -> finish());
+
+        binding.btnFinalizar.setOnClickListener(v -> finalizarPedido());
+    }
+
+    private void finalizarPedido() {
+        Pedido pedido = new Pedido();
+        pedido.setIdCliente(FirebaseHelper.getIdFirebase());
+        pedido.setEndereco(enderecoList.get(0));
+        pedido.setTotal(itemPedidoDAO.getTotalPedido());
+        pedido.setPagamento(formaPagamento.getNome());
+        pedido.setStatus(1);
+
+        if (formaPagamento.getTipoValor().equals("DESC")) {
+            pedido.setDesconto(formaPagamento.getValor());
+        } else {
+            pedido.setAcrescimo(formaPagamento.getValor());
+        }
+
+        pedido.setItemPedidoList(itemPedidoDAO.getList());
+
+        pedido.salvar(true);
     }
 
     private void configDados() {
@@ -90,6 +119,7 @@ public class UsuarioResumoPedidoActivity extends AppCompatActivity {
         }
 
         binding.textNomePagamento.setText(formaPagamento.getNome());
+
         if (formaPagamento.getTipoValor().equals("DESC")) {
             binding.textValorTipo.setText("Desconto");
         } else {
