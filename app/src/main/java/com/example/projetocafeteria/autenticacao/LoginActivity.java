@@ -5,9 +5,11 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
 import com.example.projetocafeteria.activity.loja.MainActivityEmpresa;
@@ -49,6 +51,8 @@ public class LoginActivity extends AppCompatActivity {
         if (!email.isEmpty()) {
             if (!senha.isEmpty()) {
 
+                ocultaTeclado();
+
                 binding.progressBar.setVisibility(View.VISIBLE);
 
                 login(email, senha);
@@ -84,9 +88,7 @@ public class LoginActivity extends AppCompatActivity {
         usuarioRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if (snapshot.exists()) { // Login usuário
-                    startActivity(new Intent(getBaseContext(), MainActivityUsuario.class));
-                } else { // Login loja
+                if (!snapshot.exists()) { // Login loja
                     startActivity(new Intent(getBaseContext(), MainActivityEmpresa.class));
                 }
                 finish();
@@ -109,5 +111,11 @@ public class LoginActivity extends AppCompatActivity {
             Intent intent = new Intent(this, CadastroActivity.class);
             resultLauncher.launch(intent);
         });
+    }
+
+    private void ocultaTeclado() {
+        InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
+        inputMethodManager.hideSoftInputFromWindow(binding.edtEmail.getWindowToken(),
+                InputMethodManager.HIDE_NOT_ALWAYS);
     }
 }
