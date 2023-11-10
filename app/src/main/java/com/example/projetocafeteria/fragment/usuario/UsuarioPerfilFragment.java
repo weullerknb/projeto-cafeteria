@@ -45,6 +45,11 @@ public class UsuarioPerfilFragment extends Fragment {
         });
         binding.btnPerfil.setOnClickListener(v -> startActivity(LoginActivity.class));
         binding.btnEnderecos.setOnClickListener(v -> startActivity(UsuarioEnderecoActivity.class));
+        binding.btnDeslogar.setOnClickListener(v -> {
+            FirebaseHelper.getAuth().signOut();
+            requireActivity().finish();
+            startActivity(new Intent(requireContext(), MainActivityUsuario.class));
+        });
     }
 
     private void startActivity(Class<?> clazz) {
