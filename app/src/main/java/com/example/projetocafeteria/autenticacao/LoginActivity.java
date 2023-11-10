@@ -72,7 +72,6 @@ public class LoginActivity extends AppCompatActivity {
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                         recuperaUsuario(task.getResult().getUser().getUid());
-                        finish();
                     } else {
                         binding.progressBar.setVisibility(View.GONE);
                         Toast.makeText(this, FirebaseHelper.validaErros(
@@ -88,7 +87,9 @@ public class LoginActivity extends AppCompatActivity {
         usuarioRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if (!snapshot.exists()) { // Login loja
+                if (snapshot.exists()) { // Login usuario
+                    setResult(RESULT_OK);
+                } else { // Login loja
                     startActivity(new Intent(getBaseContext(), MainActivityEmpresa.class));
                 }
                 finish();
