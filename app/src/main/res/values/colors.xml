@@ -11,5 +11,5 @@
     <color name="color_laranja">#FF8C00</color>
     <color name="colorIconeOffBnv">#FF000000</color>
     <color name="colorIconeOnBnv">#ffff00</color>
-    ff2400
+    <color name="color_status_pedido_aprovado">#34A853</color>
 </resources>
