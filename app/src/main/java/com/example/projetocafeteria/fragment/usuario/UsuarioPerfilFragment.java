@@ -38,6 +38,13 @@ public class UsuarioPerfilFragment extends Fragment {
         configClicks();
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        configMenu();
+    }
+
     private void configClicks() {
         binding.btnEntrar.setOnClickListener(v -> startActivity(LoginActivity.class));
         binding.btnCadastrar.setOnClickListener(v -> {
@@ -59,4 +66,15 @@ public class UsuarioPerfilFragment extends Fragment {
             startActivity(new Intent(requireContext(), LoginActivity.class));
         }
     }
+
+    private void configMenu() {
+        if (FirebaseHelper.getAutenticado()) {
+            binding.llLogado.setVisibility(View.GONE);
+            binding.btnDeslogar.setVisibility(View.VISIBLE);
+        } else {
+            binding.llLogado.setVisibility(View.VISIBLE);
+            binding.btnDeslogar.setVisibility(View.GONE);
+        }
+    }
+
 }
