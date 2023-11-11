@@ -6,6 +6,7 @@ import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.NavigationUI;
 
 import android.os.Bundle;
+import android.widget.Toast;
 
 import com.example.projetocafeteria.R;
 import com.example.projetocafeteria.databinding.ActivityMainUsuarioBinding;
@@ -27,9 +28,20 @@ public class MainActivityUsuario extends AppCompatActivity {
         NavigationUI.setupWithNavController(binding.bottomNavigationView, navController);
 
         int id = getIntent().getIntExtra("id", 0);
+        if (id != 0) direcionaAcesso(id);
+    }
 
-        if (id == 2) {
-            binding.bottomNavigationView.setSelectedItemId(R.id.menu_carrinho);
+    private void direcionaAcesso(int id) {
+        switch (id) {
+            case 1:
+                binding.bottomNavigationView.setSelectedItemId(R.id.menu_pedido);
+                break;
+            case 2:
+                binding.bottomNavigationView.setSelectedItemId(R.id.menu_carrinho);
+                break;
+            default:
+                Toast.makeText(this, "Acesso inválido, verifique por favor.", Toast.LENGTH_SHORT).show();
+                break;
         }
     }
 }

@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 
+import com.example.projetocafeteria.DAO.ItemPedidoDAO;
 import com.example.projetocafeteria.activity.loja.MainActivityEmpresa;
 import com.example.projetocafeteria.activity.usuario.MainActivityUsuario;
 import com.example.projetocafeteria.R;
@@ -24,6 +25,13 @@ public class SplashActivity extends AppCompatActivity {
         setContentView(R.layout.activity_splash);
 
         new Handler(getMainLooper()).postDelayed(this::verificaAcesso, 3000);
+
+        limparCarrinho();
+    }
+
+    private void limparCarrinho() {
+        ItemPedidoDAO itemPedidoDAO = new ItemPedidoDAO(this);
+        itemPedidoDAO.limparCarrinho();
     }
 
     private void verificaAcesso() {
