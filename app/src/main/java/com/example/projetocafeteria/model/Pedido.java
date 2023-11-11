@@ -11,7 +11,7 @@ import java.util.List;
 public class Pedido implements Serializable {
 
     private String id;
-    private int status;
+    private StatusPedido statusPedido;
     private String idCliente;
     private Endereco endereco;
     private List<ItemPedido> itemPedidoList = new ArrayList<>();
@@ -35,12 +35,12 @@ public class Pedido implements Serializable {
         this.id = id;
     }
 
-    public int getStatus() {
-        return status;
+    public StatusPedido getStatusPedido() {
+        return statusPedido;
     }
 
-    public void setStatus(int status) {
-        this.status = status;
+    public void setStatusPedido(StatusPedido statusPedido) {
+        this.statusPedido = statusPedido;
     }
 
     public String getIdCliente() {
