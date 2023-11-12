@@ -31,7 +31,7 @@ public class UsuarioPedidoFragment extends Fragment implements UsuarioPedidosAda
 
     private UsuarioPedidosAdapter usuarioPedidosAdapter;
 
-    private List<Pedido> pedidoList = new ArrayList<>();
+    private final List<Pedido> pedidoList = new ArrayList<>();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
