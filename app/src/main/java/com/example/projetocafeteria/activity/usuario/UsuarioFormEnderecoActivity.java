@@ -1,5 +1,6 @@
 package com.example.projetocafeteria.activity.usuario;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Activity;
@@ -7,10 +8,17 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.Toast;
 
-import com.example.projetocafeteria.R;
+import com.example.projetocafeteria.api.CEPService;
 import com.example.projetocafeteria.databinding.ActivityUsuarioFormEnderecoBinding;
 import com.example.projetocafeteria.model.Endereco;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class UsuarioFormEnderecoActivity extends AppCompatActivity {
 
@@ -18,6 +26,8 @@ public class UsuarioFormEnderecoActivity extends AppCompatActivity {
 
     private Endereco endereco;
     private boolean novoEndereco = true;
+
+    private Retrofit retrofit;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,6 +40,8 @@ public class UsuarioFormEnderecoActivity extends AppCompatActivity {
         configClicks();
 
         getExtra();
+
+        iniciaRetrofit();
     }
 
     private void getExtra() {
@@ -39,6 +51,14 @@ public class UsuarioFormEnderecoActivity extends AppCompatActivity {
             configDados();
             novoEndereco = false;
         }
+    }
+
+    private void iniciaRetrofit() {
+        retrofit = new Retrofit
+                .Builder()
+                .baseUrl("https://viacep.com.br/ws/")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
     }
 
     private void configDados() {
@@ -54,6 +74,69 @@ public class UsuarioFormEnderecoActivity extends AppCompatActivity {
     private void configClicks() {
         binding.include.include.ibVoltar.setOnClickListener(v -> finish());
         binding.include.btnSalvar.setOnClickListener(v -> validaDados());
+        binding.btnBuscar.setOnClickListener(v -> buscarCEP());
+    }
+
+    private void buscarCEP() {
+
+        String cep = binding.edtCEP.getText().toString().trim().replace("-", "");
+        
+        if (cep.length() == 8) {
+
+            ocultaTeclado();
+
+            binding.progressBar.setVisibility(View.VISIBLE);
+
+            CEPService cepService = retrofit.create(CEPService.class);
+            Call<Endereco> call = cepService.recuperarCEP(cep);
+
+            call.enqueue(new Callback<Endereco>() {
+                @Override
+                public void onResponse(@NonNull Call<Endereco> call, @NonNull Response<Endereco> response) {
+                    if (response.isSuccessful()) {
+
+                        String idEndereco = "";
+                        String nomeEndereco = "";
+                        String numEndereco = "";
+                        if (!novoEndereco) {
+                            idEndereco = endereco.getId();
+                            nomeEndereco = endereco.getNomeEndereco();
+                            numEndereco = endereco.getNumero();
+                        }
+
+                        endereco = response.body();
+
+                        if (endereco != null) {
+                            if (endereco.getLocalidade() != null) {
+
+                                if (!novoEndereco) endereco.setId(idEndereco);
+                                endereco.setNomeEndereco(nomeEndereco);
+                                endereco.setNumero(numEndereco);
+
+                                configDados();
+
+                            } else {
+                                Toast.makeText(getBaseContext(), "Não foi possível recuperar o endereço.", Toast.LENGTH_SHORT).show();
+                            }
+                        } else {
+                            Toast.makeText(getBaseContext(), "Não foi possível recuperar o endereço.", Toast.LENGTH_SHORT).show();
+                        }
+
+                        binding.progressBar.setVisibility(View.GONE);
+                    }
+                }
+
+                @Override
+                public void onFailure(@NonNull Call<Endereco> call, @NonNull Throwable t) {
+                    Toast.makeText(getBaseContext(), "Não foi possível recuperar o endereço.", Toast.LENGTH_SHORT).show();
+                    binding.progressBar.setVisibility(View.GONE);
+                }
+            });
+
+        } else {
+            Toast.makeText(this, "Formato do CEP inválido", Toast.LENGTH_SHORT).show();
+        }
+
     }
 
     private void validaDados() {
