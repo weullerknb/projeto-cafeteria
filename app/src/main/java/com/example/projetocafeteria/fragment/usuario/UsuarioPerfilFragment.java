@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 import com.example.projetocafeteria.R;
 import com.example.projetocafeteria.activity.usuario.MainActivityUsuario;
 import com.example.projetocafeteria.activity.usuario.UsuarioEnderecoActivity;
+import com.example.projetocafeteria.activity.usuario.UsuarioPerfilActivity;
 import com.example.projetocafeteria.autenticacao.CadastroActivity;
 import com.example.projetocafeteria.autenticacao.LoginActivity;
 import com.example.projetocafeteria.databinding.FragmentUsuarioPerfilBinding;
@@ -50,7 +51,7 @@ public class UsuarioPerfilFragment extends Fragment {
         binding.btnCadastrar.setOnClickListener(v -> {
             startActivity(new Intent(requireContext(), CadastroActivity.class));
         });
-        binding.btnPerfil.setOnClickListener(v -> startActivity(LoginActivity.class));
+        binding.btnPerfil.setOnClickListener(v -> startActivity(UsuarioPerfilActivity.class));
         binding.btnEnderecos.setOnClickListener(v -> startActivity(UsuarioEnderecoActivity.class));
         binding.btnDeslogar.setOnClickListener(v -> {
             FirebaseHelper.getAuth().signOut();
