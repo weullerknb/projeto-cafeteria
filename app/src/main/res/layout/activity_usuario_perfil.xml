@@ -68,7 +68,7 @@
                 android:padding="16dp"
                 app:mask="(__) _____-____"
                 app:maskCharacter="_"
-                app:maskStyle="completable"/>
+                app:maskStyle="normal"/>
 
             <TextView
                 android:layout_width="wrap_content"
@@ -87,7 +87,7 @@
                 android:padding="16dp"
                 app:mask="__/__/____"
                 app:maskCharacter="_"
-                app:maskStyle="completable"/>
+                app:maskStyle="normal"/>
 
             <TextView
                 android:layout_width="wrap_content"

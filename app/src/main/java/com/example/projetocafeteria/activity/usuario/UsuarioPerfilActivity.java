@@ -3,8 +3,11 @@ package com.example.projetocafeteria.activity.usuario;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.Toast;
 
 import com.example.projetocafeteria.databinding.ActivityUsuarioPerfilBinding;
 import com.example.projetocafeteria.helper.FirebaseHelper;
@@ -31,6 +34,54 @@ public class UsuarioPerfilActivity extends AppCompatActivity {
         configClicks();
 
         recuperaUsuario();
+    }
+
+    private void validaDados() {
+        String nome = binding.edtNome.getText().toString().trim();
+        String telefone = binding.edtTelefone.getMasked();
+        String dataNascimento = binding.edtDataNascimento.getMasked();
+
+        if (!nome.isEmpty()) {
+            if (!telefone.isEmpty()) {
+                if (telefone.length() == 15) {
+                    if (!dataNascimento.isEmpty()) {
+                        if (dataNascimento.length() == 10) {
+
+                            ocultaTeclado();
+
+                            binding.progressBar.setVisibility(View.VISIBLE);
+
+                            if (usuario != null) {
+                                usuario.setNome(nome);
+                                usuario.setTelefone(telefone);
+                                usuario.setDataNascimento(dataNascimento);
+                                usuario.salvar();
+                            } else {
+                                Toast.makeText(this, "Aguarde, ainda estamos recuperando as informações", Toast.LENGTH_SHORT).show();
+                            }
+
+                            binding.progressBar.setVisibility(View.GONE);
+
+                        } else {
+                            binding.edtDataNascimento.requestFocus();
+                            binding.edtDataNascimento.setError("Formato de data inválido.");
+                        }
+                    } else {
+                        binding.edtDataNascimento.requestFocus();
+                        binding.edtDataNascimento.setError("Informação obrigatória.");
+                    }
+                } else {
+                    binding.edtTelefone.requestFocus();
+                    binding.edtTelefone.setError("Formato do telefone inválido.");
+                }
+            } else {
+                binding.edtTelefone.requestFocus();
+                binding.edtTelefone.setError("Informação obrigatória.");
+            }
+        } else {
+            binding.edtNome.requestFocus();
+            binding.edtNome.setError("Informação obrigatória.");
+        }
     }
 
     private void configDados() {
@@ -63,9 +114,16 @@ public class UsuarioPerfilActivity extends AppCompatActivity {
 
     private void configClicks() {
         binding.include.include.ibVoltar.setOnClickListener(v -> finish());
+        binding.include.btnSalvar.setOnClickListener(v -> validaDados());
     }
 
     private void iniciaComponentes() {
         binding.include.textTitulo.setText("Meus dados");
+    }
+
+    private void ocultaTeclado() {
+        InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
+        inputMethodManager.hideSoftInputFromWindow(binding.edtEmail.getWindowToken(),
+                InputMethodManager.HIDE_NOT_ALWAYS);
     }
 }
