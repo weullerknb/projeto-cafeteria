@@ -28,6 +28,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 
+import java.security.ProtectionDomain;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -55,7 +56,6 @@ public class UsuarioHomeFragment extends Fragment implements CategoriaAdapter.On
         super.onViewCreated(view, savedInstanceState);
 
         configRvCategorias();
-        configRvProdutos();
     }
 
     @Override
@@ -128,7 +128,7 @@ public class UsuarioHomeFragment extends Fragment implements CategoriaAdapter.On
         });
     }
 
-    private void configRvProdutos() {
+    private void configRvProdutos(List<Produto> produtoList) {
         binding.rvProdutos.setLayoutManager(new GridLayoutManager(requireContext(), 2));
         binding.rvProdutos.setHasFixedSize(true);
         lojaProdutoAdapter = new LojaProdutoAdapter(R.layout.item_produto_adapter, produtoList, requireContext(), true, idsFavoritos, this, this);
@@ -143,17 +143,18 @@ public class UsuarioHomeFragment extends Fragment implements CategoriaAdapter.On
             public void onDataChange(@NonNull DataSnapshot snapshot) {
 
                 produtoList.clear();
+
                 for (DataSnapshot ds : snapshot.getChildren()) {
                     Produto produto = ds.getValue(Produto.class);
                     produtoList.add(produto);
                 }
 
-                listEmpty();
+                listEmpty(produtoList);
 
                 binding.progressBar.setVisibility(View.GONE);
                 Collections.reverse(produtoList);
-                lojaProdutoAdapter.notifyDataSetChanged();
 
+                configRvProdutos(produtoList);
             }
 
             @Override
@@ -163,9 +164,25 @@ public class UsuarioHomeFragment extends Fragment implements CategoriaAdapter.On
         });
     }
 
-    private void listEmpty() {
+    private void filtraProdutoCategoria(Categoria categoria) {
+        if (!categoria.isTodos()) {
+            List<Produto> filtroProdutoCategoriaList = new ArrayList<>();
+
+            for (Produto produto : produtoList) {
+                if (produto.getIdsCategorias().contains(categoria.getId())) {
+                    filtroProdutoCategoriaList.add(produto);
+                }
+            }
+
+            configRvProdutos(filtroProdutoCategoriaList);
+        } else {
+            configRvProdutos(produtoList);
+        }
+    }
+
+    private void listEmpty(List<Produto> produtoList) {
         if (produtoList.isEmpty()) {
-            binding.textInfo.setText("Nenhum produto cadastrado.");
+            binding.textInfo.setText("Nenhum produto localizado.");
         } else {
             binding.textInfo.setText("");
         }
@@ -179,7 +196,7 @@ public class UsuarioHomeFragment extends Fragment implements CategoriaAdapter.On
 
     @Override
     public void onClickListener(Categoria categoria) {
-        Toast.makeText(requireContext(), categoria.getNome(), Toast.LENGTH_SHORT).show();
+        filtraProdutoCategoria(categoria);
     }
 
     @Override
