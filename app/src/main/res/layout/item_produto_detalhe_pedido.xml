@@ -51,7 +51,7 @@
         android:maxLines="2"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        tools:text="Total: R$ 49,99" />
+        tools:text="R$ 49,99" />
 
     <ImageView
         android:id="@+id/imageView8"

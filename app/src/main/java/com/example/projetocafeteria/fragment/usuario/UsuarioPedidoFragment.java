@@ -1,5 +1,6 @@
 package com.example.projetocafeteria.fragment.usuario;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -12,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.example.projetocafeteria.activity.app.DetalhesPedidoActivity;
 import com.example.projetocafeteria.adapter.UsuarioPedidosAdapter;
 import com.example.projetocafeteria.databinding.FragmentUsuarioPedidoBinding;
 import com.example.projetocafeteria.helper.FirebaseHelper;
@@ -95,6 +97,8 @@ public class UsuarioPedidoFragment extends Fragment implements UsuarioPedidosAda
 
     @Override
     public void onClick(Pedido pedido) {
-        Toast.makeText(requireContext(), pedido.getPagamento(), Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent(requireContext(), DetalhesPedidoActivity.class);
+        intent.putExtra("pedidoSelecionado", pedido);
+        startActivity(intent);
     }
 }
