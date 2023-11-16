@@ -72,6 +72,12 @@ public class DetalhesProdutoActivity extends AppCompatActivity implements LojaPr
         configRvProdutos();
     }
 
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (dialog != null) dialog.dismiss();
+    }
+
     private void configClicks() {
         binding.include.textTitulo.setText("Detalhes do Produto");
         binding.include.include.ibVoltar.setOnClickListener(v -> finish());
@@ -213,7 +219,6 @@ public class DetalhesProdutoActivity extends AppCompatActivity implements LojaPr
             intent.putExtra("id", 2);
             startActivity(intent);
             finish();
-            dialog.dismiss();
         });
 
         builder.setView(dialogBinding.getRoot());
