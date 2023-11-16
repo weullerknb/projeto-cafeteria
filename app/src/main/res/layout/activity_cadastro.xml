@@ -66,7 +66,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/edtNome" />
 
-            <EditText
+            <com.santalu.maskara.widget.MaskEditText
                 android:id="@+id/edtTelefone"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -76,8 +76,11 @@
                 android:layout_marginHorizontal="24dp"
                 android:layout_marginTop="16dp"
                 android:hint="Telefone"
-                android:inputType="phone"
+                android:inputType="number"
                 android:padding="12dp"
+                app:mask="(__) _____-____"
+                app:maskCharacter="_"
+                app:maskStyle="normal"
                 app:layout_constraintBottom_toTopOf="@+id/edtDataNascimento"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"

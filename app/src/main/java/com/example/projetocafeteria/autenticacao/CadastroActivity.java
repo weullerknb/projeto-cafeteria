@@ -30,7 +30,7 @@ public class CadastroActivity extends AppCompatActivity {
     public void validaDados(View view) {
         String nome = binding.edtNome.getText().toString().trim();
         String cpf = binding.edtCpf.getText().toString().trim();
-        String telefone = binding.edtTelefone.getText().toString().trim();
+        String telefone = binding.edtTelefone.getMasked();
         String dataNascimento = binding.edtDataNascimento.getText().toString().trim();
         String email = binding.edtEmail.getText().toString().trim();
         String senha = binding.edtSenha.getText().toString().trim();
@@ -39,43 +39,48 @@ public class CadastroActivity extends AppCompatActivity {
         if (!nome.isEmpty()) {
             if (!cpf.isEmpty()) {
                 if (!telefone.isEmpty()) {
-                    if (!dataNascimento.isEmpty()) {
-                        if (!email.isEmpty()) {
-                            if (!senha.isEmpty()) {
-                                if (!confirmaSenha.isEmpty()) {
-                                    if (senha.equals(confirmaSenha)) {
+                    if (telefone.length() == 15) {
+                        if (!dataNascimento.isEmpty()) {
+                            if (!email.isEmpty()) {
+                                if (!senha.isEmpty()) {
+                                    if (!confirmaSenha.isEmpty()) {
+                                        if (senha.equals(confirmaSenha)) {
 
-                                        binding.progressBar.setVisibility(View.VISIBLE);
+                                            binding.progressBar.setVisibility(View.VISIBLE);
 
-                                        Usuario usuario = new Usuario();
-                                        usuario.setNome(nome);
-                                        usuario.setCpf(cpf);
-                                        usuario.setTelefone(telefone);
-                                        usuario.setDataNascimento(dataNascimento);
-                                        usuario.setEmail(email);
-                                        usuario.setSenha(senha);
+                                            Usuario usuario = new Usuario();
+                                            usuario.setNome(nome);
+                                            usuario.setCpf(cpf);
+                                            usuario.setTelefone(telefone);
+                                            usuario.setDataNascimento(dataNascimento);
+                                            usuario.setEmail(email);
+                                            usuario.setSenha(senha);
 
-                                        criarConta(usuario);
+                                            criarConta(usuario);
 
+                                        } else {
+                                            binding.edtConfirmaSenha.requestFocus();
+                                            binding.edtConfirmaSenha.setError("Senhas são diferentes.");
+                                        }
                                     } else {
                                         binding.edtConfirmaSenha.requestFocus();
-                                        binding.edtConfirmaSenha.setError("Senhas são diferentes.");
+                                        binding.edtConfirmaSenha.setError("Confirme sua senha.");
                                     }
                                 } else {
-                                    binding.edtConfirmaSenha.requestFocus();
-                                    binding.edtConfirmaSenha.setError("Confirme sua senha.");
+                                    binding.edtSenha.requestFocus();
+                                    binding.edtSenha.setError("Informe uma senha.");
                                 }
                             } else {
-                                binding.edtSenha.requestFocus();
-                                binding.edtSenha.setError("Informe uma senha.");
+                                binding.edtEmail.requestFocus();
+                                binding.edtEmail.setError("Informe seu email.");
                             }
                         } else {
-                            binding.edtEmail.requestFocus();
-                            binding.edtEmail.setError("Informe seu email.");
+                            binding.edtDataNascimento.requestFocus();
+                            binding.edtDataNascimento.setError("Informe sua data de nascimento.");
                         }
                     } else {
-                        binding.edtDataNascimento.requestFocus();
-                        binding.edtDataNascimento.setError("Informe sua data de nascimento.");
+                        binding.edtTelefone.requestFocus();
+                        binding.edtTelefone.setError("Formato do telefone inválido.");
                     }
                 } else {
                     binding.edtTelefone.requestFocus();
