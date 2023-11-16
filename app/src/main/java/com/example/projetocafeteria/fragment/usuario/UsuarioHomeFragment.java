@@ -71,9 +71,10 @@ public class UsuarioHomeFragment extends Fragment implements CategoriaAdapter.On
     private void configSearchView() {
         binding.searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
-            public boolean onQueryTextSubmit(String query) {
+            public boolean onQueryTextSubmit(String pesquisa) {
                 ocultaTeclado();
-                filtraProdutoNome(query);
+
+                filtraProdutoNome(pesquisa);
                 return true;
             }
 
@@ -84,43 +85,21 @@ public class UsuarioHomeFragment extends Fragment implements CategoriaAdapter.On
         });
 
         binding.searchView.findViewById(androidx.appcompat.R.id.search_close_btn).setOnClickListener(v -> {
-            EditText edtSearchView = binding.searchView.findViewById(androidx.appcompat.R.id.search_src_text);
-            edtSearchView.setText("");
-            edtSearchView.clearFocus();
+            EditText edtSerachView = binding.searchView.findViewById(androidx.appcompat.R.id.search_src_text);
+            edtSerachView.setText("");
+            edtSerachView.clearFocus();
             ocultaTeclado();
             filtraProdutoCategoria();
         });
+
     }
 
     private void recuperaDados() {
         recuperaCategorias();
+
         recuperaProdutos();
+
         recuperaFavoritos();
-    }
-
-    private void recuperaFavoritos() {
-        if (FirebaseHelper.getAutenticado()) {
-            DatabaseReference favoritoRef = FirebaseHelper.getDatabaseReference()
-                    .child("favoritos")
-                    .child(FirebaseHelper.getIdFirebase());
-            favoritoRef.addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot snapshot) {
-
-                    idsFavoritos.clear();
-
-                    for (DataSnapshot ds : snapshot.getChildren()) {
-                        String idFavorito = ds.getValue(String.class);
-                        idsFavoritos.add(idFavorito);
-                    }
-                }
-
-                @Override
-                public void onCancelled(@NonNull DatabaseError error) {
-
-                }
-            });
-        }
     }
 
     private void configRvCategorias() {
@@ -128,6 +107,13 @@ public class UsuarioHomeFragment extends Fragment implements CategoriaAdapter.On
         binding.rvCategorias.setHasFixedSize(true);
         categoriaAdapter = new CategoriaAdapter(R.layout.item_categoria_horizontal, true, categoriaList, this);
         binding.rvCategorias.setAdapter(categoriaAdapter);
+    }
+
+    private void configRvProdutos(List<Produto> produtoList) {
+        binding.rvProdutos.setLayoutManager(new GridLayoutManager(requireContext(), 2));
+        binding.rvProdutos.setHasFixedSize(true);
+        lojaProdutoAdapter = new LojaProdutoAdapter(R.layout.item_produto_adapter, produtoList, requireContext(), true, idsFavoritos, this, this);
+        binding.rvProdutos.setAdapter(lojaProdutoAdapter);
     }
 
     private void recuperaCategorias() {
@@ -146,6 +132,7 @@ public class UsuarioHomeFragment extends Fragment implements CategoriaAdapter.On
 
                 Collections.reverse(categoriaList);
                 categoriaAdapter.notifyDataSetChanged();
+
             }
 
             @Override
@@ -153,13 +140,6 @@ public class UsuarioHomeFragment extends Fragment implements CategoriaAdapter.On
 
             }
         });
-    }
-
-    private void configRvProdutos(List<Produto> produtoList) {
-        binding.rvProdutos.setLayoutManager(new GridLayoutManager(requireContext(), 2));
-        binding.rvProdutos.setHasFixedSize(true);
-        lojaProdutoAdapter = new LojaProdutoAdapter(R.layout.item_produto_adapter, produtoList, requireContext(), true, idsFavoritos, this, this);
-        binding.rvProdutos.setAdapter(lojaProdutoAdapter);
     }
 
     private void recuperaProdutos() {
@@ -191,6 +171,32 @@ public class UsuarioHomeFragment extends Fragment implements CategoriaAdapter.On
         });
     }
 
+    private void recuperaFavoritos() {
+        if (FirebaseHelper.getAutenticado()) {
+            DatabaseReference favoritoRef = FirebaseHelper.getDatabaseReference()
+                    .child("favoritos")
+                    .child(FirebaseHelper.getIdFirebase());
+            favoritoRef.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+
+                    idsFavoritos.clear();
+
+                    for (DataSnapshot ds : snapshot.getChildren()) {
+                        String idFavorito = ds.getValue(String.class);
+                        idsFavoritos.add(idFavorito);
+                    }
+
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
+                }
+            });
+        }
+    }
+
     private void filtraProdutoCategoria() {
         if (!categoriaSelecionada.isTodos()) {
             for (Produto produto : produtoList) {
@@ -200,6 +206,7 @@ public class UsuarioHomeFragment extends Fragment implements CategoriaAdapter.On
                     }
                 }
             }
+
             configRvProdutos(filtroProdutoCategoriaList);
         } else {
             filtroProdutoCategoriaList.clear();
@@ -208,7 +215,6 @@ public class UsuarioHomeFragment extends Fragment implements CategoriaAdapter.On
     }
 
     private void filtraProdutoNome(String pesquisa) {
-
         List<Produto> filtroProdutoNomeList = new ArrayList<>();
 
         if (!filtroProdutoCategoriaList.isEmpty()) {
@@ -235,10 +241,11 @@ public class UsuarioHomeFragment extends Fragment implements CategoriaAdapter.On
         }
     }
 
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        binding = null;
+    // Oculta o teclado do dispotivo
+    private void ocultaTeclado() {
+        InputMethodManager inputMethodManager = (InputMethodManager) requireActivity().getSystemService(Activity.INPUT_METHOD_SERVICE);
+        inputMethodManager.hideSoftInputFromWindow(binding.searchView.getWindowToken(),
+                InputMethodManager.HIDE_NOT_ALWAYS);
     }
 
     @Override
@@ -262,11 +269,5 @@ public class UsuarioHomeFragment extends Fragment implements CategoriaAdapter.On
             idsFavoritos.remove(produto.getId());
         }
         Favorito.salvar(idsFavoritos);
-    }
-
-    private void ocultaTeclado() {
-        InputMethodManager inputMethodManager = (InputMethodManager) requireActivity().getSystemService(Activity.INPUT_METHOD_SERVICE);
-        inputMethodManager.hideSoftInputFromWindow(binding.searchView.getWindowToken(),
-                InputMethodManager.HIDE_NOT_ALWAYS);
     }
 }
