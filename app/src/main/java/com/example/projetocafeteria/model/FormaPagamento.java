@@ -10,7 +10,7 @@ public class FormaPagamento implements Serializable {
     private String id;
     private String nome;
     private String descricao;
-    private double valor;
+    private int valor;
     private String tipoValor; // Desconto ou Acréscimo
 
     public FormaPagamento() {
@@ -42,11 +42,11 @@ public class FormaPagamento implements Serializable {
         this.descricao = descricao;
     }
 
-    public double getValor() {
+    public int getValor() {
         return valor;
     }
 
-    public void setValor(double valor) {
+    public void setValor(int valor) {
         this.valor = valor;
     }
 

@@ -58,7 +58,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/textDescricaoPagamento"
                 app:layout_constraintVertical_bias="1.0"
-                tools:text="R$ 10,00" />
+                tools:text="10%" />
 
             <TextView
                 android:id="@+id/textTipoPagamento"

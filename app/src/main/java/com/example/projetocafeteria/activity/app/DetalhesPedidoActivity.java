@@ -75,19 +75,20 @@ public class DetalhesPedidoActivity extends AppCompatActivity {
 
         binding.textNomePagamento.setText(pedido.getPagamento());
 
+
         double valorExtra;
         double totalPedido = pedido.getTotal();
         if (pedido.getAcrescimo() > 0) {
             binding.textValorTipo.setText("Acréscimo");
-            valorExtra = pedido.getAcrescimo();
-            totalPedido += valorExtra;
+            binding.textValorTipoPagamento.setText(pedido.getAcrescimo() + "%");
+            valorExtra = (double) pedido.getAcrescimo() / 100;
+            totalPedido += (totalPedido * valorExtra);
         } else {
             binding.textValorTipo.setText("Desconto");
-            valorExtra = pedido.getDesconto();
-            totalPedido -= valorExtra;
+            binding.textValorTipoPagamento.setText(pedido.getDesconto() + "%");
+            valorExtra = (double) pedido.getDesconto() / 100;
+            totalPedido -= (totalPedido * valorExtra);
         }
-
-        binding.textValorTipoPagamento.setText(getString(R.string.valor, GetMask.getValor(valorExtra)));
 
         binding.textValorProdutos.setText(getString(R.string.valor, GetMask.getValor(pedido.getTotal())));
 

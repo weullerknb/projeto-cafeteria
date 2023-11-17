@@ -19,8 +19,8 @@ public class Pedido implements Serializable {
     private long dataStatusPedido;
     private double total;
     private String pagamento;
-    private double desconto;
-    private double acrescimo;
+    private int desconto;
+    private int acrescimo;
 
     public Pedido() {
         DatabaseReference pedidoRef = FirebaseHelper.getDatabaseReference();
@@ -99,19 +99,19 @@ public class Pedido implements Serializable {
         this.pagamento = pagamento;
     }
 
-    public double getDesconto() {
+    public int getDesconto() {
         return desconto;
     }
 
-    public void setDesconto(double desconto) {
+    public void setDesconto(int desconto) {
         this.desconto = desconto;
     }
 
-    public double getAcrescimo() {
+    public int getAcrescimo() {
         return acrescimo;
     }
 
-    public void setAcrescimo(double acrescimo) {
+    public void setAcrescimo(int acrescimo) {
         this.acrescimo = acrescimo;
     }
 

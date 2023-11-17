@@ -50,7 +50,18 @@ public class LojaPedidosAdapter extends RecyclerView.Adapter<LojaPedidosAdapter.
         recuperaCliente(pedido, holder);
 
         holder.textIdPedido.setText(pedido.getId());
-        holder.textTotalPedido.setText(context.getString(R.string.valor, GetMask.getValor(pedido.getTotal())));
+
+        double valorExtra;
+        double totalPedido = pedido.getTotal();
+        if (pedido.getAcrescimo() > 0) {
+            valorExtra = (double) pedido.getAcrescimo() / 100;
+            totalPedido += (totalPedido * valorExtra);
+        } else {
+            valorExtra = (double) pedido.getDesconto() / 100;
+            totalPedido -= (totalPedido * valorExtra);
+        }
+
+        holder.textTotalPedido.setText(context.getString(R.string.valor, GetMask.getValor(totalPedido)));
         holder.textDataPedido.setText(GetMask.getDate(pedido.getDataPedido(), 0));
 
         holder.btnDetalhesPedido.setOnClickListener(v -> clickListener.onClick(pedido, "detalhes"));

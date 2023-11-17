@@ -61,14 +61,17 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
-            android:text="Valor" />
+            android:text="Porcentagem" />
 
-        <com.blackcat.currencyedittext.CurrencyEditText
-            android:id="@+id/edtValor"
+        <EditText
+            android:id="@+id/edtPorcentagem"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:background="@drawable/bg_edit_off"
+            android:hint="10"
+            android:inputType="number"
+            android:maxLength="3"
             android:padding="16dp" />
 
         <RadioGroup

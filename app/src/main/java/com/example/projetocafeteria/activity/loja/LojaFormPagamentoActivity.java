@@ -51,7 +51,7 @@ public class LojaFormPagamentoActivity extends AppCompatActivity {
 
         binding.edtFormaPagamento.setText(formaPagamento.getNome());
         binding.edtDescricaoPagamento.setText(formaPagamento.getDescricao());
-        binding.edtValor.setText(getString(R.string.valor, GetMask.getValor(formaPagamento.getValor())));
+        binding.edtPorcentagem.setText(String.valueOf(formaPagamento.getValor()));
 
         if (formaPagamento.getTipoValor().equals("DESC")) {
             binding.rgTipo.check(R.id.rbDesconto);
@@ -76,7 +76,7 @@ public class LojaFormPagamentoActivity extends AppCompatActivity {
     private void validaDados() {
         String nome = binding.edtFormaPagamento.getText().toString().trim();
         String descricao = binding.edtDescricaoPagamento.getText().toString().trim();
-        double valor = (double) binding.edtValor.getRawValue() / 100;
+        int valor = Integer.parseInt(binding.edtPorcentagem.getText().toString().trim());
 
         if (!nome.isEmpty()) {
             if (!descricao.isEmpty()) {
@@ -119,12 +119,11 @@ public class LojaFormPagamentoActivity extends AppCompatActivity {
 
     private void ocultaTeclado() {
         InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
-        inputMethodManager.hideSoftInputFromWindow(binding.edtValor.getWindowToken(),
+        inputMethodManager.hideSoftInputFromWindow(binding.edtPorcentagem.getWindowToken(),
                 InputMethodManager.HIDE_NOT_ALWAYS);
     }
 
     private void iniciaComponentes() {
-        binding.edtValor.setLocale(new Locale("PT", "br"));
         binding.include.textTitulo.setText("Forma de Pagamento");
     }
 }

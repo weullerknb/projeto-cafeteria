@@ -134,16 +134,22 @@ public class UsuarioResumoPedidoActivity extends AppCompatActivity {
             binding.textValorTipo.setText("Acréscimo");
         }
 
-        double valorExtra = formaPagamento.getValor();
+        double valorAuxiliar = (double) formaPagamento.getValor() / 100;
+        double valorExtra = itemPedidoDAO.getTotalPedido() * valorAuxiliar;
 
-        binding.textValorTipoPagamento.setText(getString(R.string.valor, GetMask.getValor(valorExtra)));
+        binding.textValorTipoPagamento.setText(formaPagamento.getValor() + "%");
 
-        if (itemPedidoDAO.getTotalPedido() >= valorExtra) {
-            binding.textValorTotal.setText(getString(R.string.valor, GetMask.getValor(itemPedidoDAO.getTotalPedido() - valorExtra)));
-            binding.textValor.setText(getString(R.string.valor, GetMask.getValor(itemPedidoDAO.getTotalPedido() - valorExtra)));
+        if (formaPagamento.getTipoValor().equals("DESC")) {
+            if (itemPedidoDAO.getTotalPedido() >= valorExtra) {
+                binding.textValorTotal.setText(getString(R.string.valor, GetMask.getValor(itemPedidoDAO.getTotalPedido() - valorExtra)));
+                binding.textValor.setText(getString(R.string.valor, GetMask.getValor(itemPedidoDAO.getTotalPedido() - valorExtra)));
+            } else {
+                binding.textValorTotal.setText(getString(R.string.valor, GetMask.getValor(0)));
+                binding.textValor.setText(getString(R.string.valor, GetMask.getValor(0)));
+            }
         } else {
-            binding.textValorTotal.setText(getString(R.string.valor, GetMask.getValor(0)));
-            binding.textValor.setText(getString(R.string.valor, GetMask.getValor(0)));
+            binding.textValorTotal.setText(getString(R.string.valor, GetMask.getValor(itemPedidoDAO.getTotalPedido() + valorExtra)));
+            binding.textValor.setText(getString(R.string.valor, GetMask.getValor(itemPedidoDAO.getTotalPedido() + valorExtra)));
         }
     }
 

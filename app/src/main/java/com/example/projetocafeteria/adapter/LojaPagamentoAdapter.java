@@ -40,7 +40,7 @@ public class LojaPagamentoAdapter extends RecyclerView.Adapter<LojaPagamentoAdap
 
         holder.textNomePagamento.setText(formaPagamento.getNome());
         holder.textDescricaoPagamento.setText(formaPagamento.getDescricao());
-        holder.textValor.setText(context.getString(R.string.valor, GetMask.getValor(formaPagamento.getValor())));
+        holder.textValor.setText(formaPagamento.getValor() + "%");
 
         if (formaPagamento.getTipoValor().equals("DESC")) {
             holder.textTipoPagamento.setText("Desconto");
