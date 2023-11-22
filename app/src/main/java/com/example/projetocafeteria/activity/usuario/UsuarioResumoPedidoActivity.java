@@ -141,13 +141,16 @@ public class UsuarioResumoPedidoActivity extends AppCompatActivity {
 
         if (formaPagamento.getTipoValor().equals("DESC")) {
             if (itemPedidoDAO.getTotalPedido() >= valorExtra) {
+                binding.textValorProdutos.setText(getString(R.string.valor, GetMask.getValor(itemPedidoDAO.getTotalPedido())));
                 binding.textValorTotal.setText(getString(R.string.valor, GetMask.getValor(itemPedidoDAO.getTotalPedido() - valorExtra)));
                 binding.textValor.setText(getString(R.string.valor, GetMask.getValor(itemPedidoDAO.getTotalPedido() - valorExtra)));
             } else {
+                binding.textValorProdutos.setText(getString(R.string.valor, GetMask.getValor(itemPedidoDAO.getTotalPedido())));
                 binding.textValorTotal.setText(getString(R.string.valor, GetMask.getValor(0)));
                 binding.textValor.setText(getString(R.string.valor, GetMask.getValor(0)));
             }
         } else {
+            binding.textValorProdutos.setText(getString(R.string.valor, GetMask.getValor(itemPedidoDAO.getTotalPedido())));
             binding.textValorTotal.setText(getString(R.string.valor, GetMask.getValor(itemPedidoDAO.getTotalPedido() + valorExtra)));
             binding.textValor.setText(getString(R.string.valor, GetMask.getValor(itemPedidoDAO.getTotalPedido() + valorExtra)));
         }
