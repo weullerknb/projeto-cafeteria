@@ -1,5 +1,6 @@
 package com.example.projetocafeteria.adapter;
 
+import android.content.Context;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.view.LayoutInflater;
@@ -19,17 +20,19 @@ import java.util.List;
 
 public class CategoriaAdapter extends RecyclerView.Adapter<CategoriaAdapter.MyViewHolder> {
 
-    private int layout;
-    private boolean background;
+    private final int layout;
+    private final boolean background;
     private final List<Categoria> categoriaList;
-    private OnClick onClick;
+    private final OnClick onClick;
+    private final Context context;
     private int row_index = 0;
 
-    public CategoriaAdapter(int layout, boolean background, List<Categoria> categoriaList, OnClick onClick) {
+    public CategoriaAdapter(int layout, boolean background, List<Categoria> categoriaList, OnClick onClick, Context context) {
         this.layout = layout;
         this.background = background;
         this.categoriaList = categoriaList;
         this.onClick = onClick;
+        this.context = context;
     }
 
     @NonNull

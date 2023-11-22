@@ -46,7 +46,6 @@ public class UsuarioHomeFragment extends Fragment implements CategoriaAdapter.On
     private final List<String> idsFavoritos = new ArrayList<>();
 
     private CategoriaAdapter categoriaAdapter;
-    private LojaProdutoAdapter lojaProdutoAdapter;
 
     private Categoria categoriaSelecionada;
 
@@ -86,6 +85,7 @@ public class UsuarioHomeFragment extends Fragment implements CategoriaAdapter.On
 
         binding.searchView.findViewById(androidx.appcompat.R.id.search_close_btn).setOnClickListener(v -> {
             EditText edtSerachView = binding.searchView.findViewById(androidx.appcompat.R.id.search_src_text);
+            binding.textInfo.setText("");
             edtSerachView.setText("");
             edtSerachView.clearFocus();
             ocultaTeclado();
@@ -105,14 +105,14 @@ public class UsuarioHomeFragment extends Fragment implements CategoriaAdapter.On
     private void configRvCategorias() {
         binding.rvCategorias.setLayoutManager(new LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false));
         binding.rvCategorias.setHasFixedSize(true);
-        categoriaAdapter = new CategoriaAdapter(R.layout.item_categoria_horizontal, true, categoriaList, this);
+        categoriaAdapter = new CategoriaAdapter(R.layout.item_categoria_horizontal, true, categoriaList, this, requireContext());
         binding.rvCategorias.setAdapter(categoriaAdapter);
     }
 
     private void configRvProdutos(List<Produto> produtoList) {
         binding.rvProdutos.setLayoutManager(new GridLayoutManager(requireContext(), 2));
         binding.rvProdutos.setHasFixedSize(true);
-        lojaProdutoAdapter = new LojaProdutoAdapter(R.layout.item_produto_adapter, produtoList, requireContext(), true, idsFavoritos, this, this);
+        LojaProdutoAdapter lojaProdutoAdapter = new LojaProdutoAdapter(R.layout.item_produto_adapter, produtoList, requireContext(), true, idsFavoritos, this, this);
         binding.rvProdutos.setAdapter(lojaProdutoAdapter);
     }
 
@@ -128,6 +128,10 @@ public class UsuarioHomeFragment extends Fragment implements CategoriaAdapter.On
                 for (DataSnapshot ds : snapshot.getChildren()) {
                     Categoria categoria = ds.getValue(Categoria.class);
                     categoriaList.add(categoria);
+
+                    if(categoria.isTodos() && categoriaSelecionada == null){
+                        categoriaSelecionada = categoria;
+                    }
                 }
 
                 Collections.reverse(categoriaList);
@@ -199,6 +203,7 @@ public class UsuarioHomeFragment extends Fragment implements CategoriaAdapter.On
 
     private void filtraProdutoCategoria() {
         if (!categoriaSelecionada.isTodos()) {
+            filtroProdutoCategoriaList.clear();
             for (Produto produto : produtoList) {
                 if (produto.getIdsCategorias().contains(categoriaSelecionada.getId())) {
                     if (!filtroProdutoCategoriaList.contains(produto)) {
@@ -230,6 +235,13 @@ public class UsuarioHomeFragment extends Fragment implements CategoriaAdapter.On
                 }
             }
         }
+
+        if(filtroProdutoNomeList.isEmpty()){
+            binding.textInfo.setText("Nenhum produto encontrado.");
+        }else {
+            binding.textInfo.setText("");
+        }
+
         configRvProdutos(filtroProdutoNomeList);
     }
 
