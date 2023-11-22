@@ -11,10 +11,10 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.example.projetocafeteria.activity.app.DetalhesPedidoActivity;
 import com.example.projetocafeteria.adapter.UsuarioPedidosAdapter;
+import com.example.projetocafeteria.autenticacao.LoginActivity;
 import com.example.projetocafeteria.databinding.FragmentUsuarioPedidoBinding;
 import com.example.projetocafeteria.helper.FirebaseHelper;
 import com.example.projetocafeteria.model.Pedido;
@@ -46,9 +46,30 @@ public class UsuarioPedidoFragment extends Fragment implements UsuarioPedidosAda
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        configRv();
+        configClicks();
 
-        recuperaPedidos();
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        if (FirebaseHelper.getAutenticado()) {
+            binding.btnLogin.setVisibility(View.GONE);
+            configRv();
+            recuperaPedidos();
+        } else {
+            binding.btnLogin.setVisibility(View.VISIBLE);
+            binding.progressBar.setVisibility(View.GONE);
+            binding.textInfo.setText("Você não está autenticado.");
+        }
+
+    }
+
+    private void configClicks() {
+        binding.btnLogin.setOnClickListener(v -> {
+            startActivity(new Intent(requireContext(), LoginActivity.class));
+        });
     }
 
     private void configRv() {
