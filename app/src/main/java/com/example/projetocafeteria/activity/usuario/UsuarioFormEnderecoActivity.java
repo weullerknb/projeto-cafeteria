@@ -79,7 +79,7 @@ public class UsuarioFormEnderecoActivity extends AppCompatActivity {
 
     private void buscarCEP() {
 
-        String cep = binding.edtCEP.getText().toString().trim().replace("-", "");
+        String cep = binding.edtCEP.getMasked().replace("-", "").replaceAll("_", "");
         
         if (cep.length() == 8) {
 
@@ -141,7 +141,7 @@ public class UsuarioFormEnderecoActivity extends AppCompatActivity {
 
     private void validaDados() {
         String nomeEndereco = binding.edtNomeEndereco.getText().toString().trim();
-        String cep = binding.edtCEP.getText().toString().trim();
+        String cep = binding.edtCEP.getMasked();
         String uf = binding.edtUF.getText().toString().trim();
         String numero = binding.edtNumEndereco.getText().toString().trim();
         String logradouro = binding.edtLogradouro.getText().toString().trim();
